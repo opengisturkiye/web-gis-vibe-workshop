@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # PostgreSQL + PostGIS Database
+  postgis:
+    image: postgis/postgis:15-3.3
+    container_name: postgis
+    environment:
+      POSTGRES_USER: gis
+      POSTGRES_PASSWORD: gis
+      POSTGRES_DB: gis
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gis -d gis"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gis-network
+
+  # GeoServer
+  geoserver:
+    image: kartoza/geoserver:2.24.1
+    container_name: geoserver
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver
+      CORS_ENABLED: "true"
+      CORS_ALLOWED_ORIGINS: "*"
+      CORS_ALLOWED_METHODS: "GET,POST,PUT,DELETE,HEAD,OPTIONS"
+      CORS_ALLOWED_HEADERS: "*"
+    ports:
+      - "8080:8080"
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+    depends_on:
+      postgis:
+        condition: service_healthy
+    networks:
+      - gis-network
+
+  # Nginx Web Server
+  web:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+    depends_on:
+      - geoserver
+    networks:
+      - gis-network
+
+volumes:
+  postgis_data:
+  geoserver_data:
+
+networks:
+  gis-network:
+    driver: bridge

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Web GIS Workshop - Docker, PostGIS, GeoServer ve OpenLayers ile interaktif harita uygulaması">
+    <title>🌍 Web GIS Workshop</title>
+    
+    <!-- OpenLayers CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.5.2/ol.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>🌍 Web GIS</h1>
+                <p class="subtitle">Workshop Uygulaması</p>
+            </div>
+
+            <!-- Katman Yönetimi -->
+            <section class="sidebar-section">
+                <h2>🗺️ Katmanlar</h2>
+                <div class="layer-controls">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="wmsLayer" checked>
+                        <span class="checkmark"></span>
+                        WMS Katmanı (Noktalar)
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="osmLayer" checked>
+                        <span class="checkmark"></span>
+                        OpenStreetMap Altlık
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="drawLayer" checked>
+                        <span class="checkmark"></span>
+                        Çizim Katmanı
+                    </label>
+                </div>
+            </section>
+
+            <!-- Araçlar -->
+            <section class="sidebar-section">
+                <h2>🛠️ Araçlar</h2>
+                <div class="tool-buttons">
+                    <button class="tool-btn" id="drawPolygonBtn" title="Polygon Çiz">
+                        <span class="icon">📐</span>
+                        Çizim (Polygon)
+                    </button>
+                    <button class="tool-btn" id="drawLineBtn" title="Çizgi Çiz">
+                        <span class="icon">📏</span>
+                        Ölçüm (Line)
+                    </button>
+                    <button class="tool-btn" id="drawPointBtn" title="Nokta Ekle">
+                        <span class="icon">📍</span>
+                        Nokta Ekle
+                    </button>
+                    <button class="tool-btn danger" id="clearBtn" title="Temizle">
+                        <span class="icon">🗑️</span>
+                        Temizle
+                    </button>
+                </div>
+            </section>
+
+            <!-- Bilgi Paneli -->
+            <section class="sidebar-section">
+                <h2>📊 Bilgi</h2>
+                <div class="info-panel" id="infoPanel">
+                    <p class="info-hint">Haritada bir noktaya tıklayarak bilgi alabilirsiniz.</p>
+                </div>
+            </section>
+
+            <!-- Ölçüm Sonuçları -->
+            <section class="sidebar-section">
+                <h2>📐 Ölçümler</h2>
+                <div class="measurement-panel" id="measurementPanel">
+                    <div class="measurement-item">
+                        <span class="label">Son Mesafe:</span>
+                        <span class="value" id="lastDistance">-</span>
+                    </div>
+                    <div class="measurement-item">
+                        <span class="label">Son Alan:</span>
+                        <span class="value" id="lastArea">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="sidebar-footer">
+                <p>🎓 Vibe Coding Workshop 2026</p>
+                <p class="version">OpenLayers v7.5.2</p>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <main class="map-wrapper">
+            <div id="map" class="map"></div>
+            
+            <!-- Popup Overlay -->
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>
+
+            <!-- Koordinat Göstergesi -->
+            <div class="coordinate-display" id="coordinateDisplay">
+                <span id="mouseCoords">-</span>
+            </div>
+
+            <!-- Zoom Seviyesi -->
+            <div class="zoom-display" id="zoomDisplay">
+                Zoom: <span id="zoomLevel">-</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- OpenLayers JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@7.5.2/dist/ol.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>
