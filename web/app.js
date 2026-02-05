@@ -10,7 +10,7 @@
 const CONFIG = {
     // GeoServer ayarları
     geoserver: {
-        url: 'http://localhost:8080/geoserver',
+        url: 'http://localhost:8088/geoserver',
         workspace: 'workshop',
         layer: 'points'
     },
