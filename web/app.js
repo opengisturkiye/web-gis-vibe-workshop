@@ -63,7 +63,7 @@ const osmLayer = new ol.layer.Tile({
 // WMS Layer (GeoServer)
 const wmsLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: `${CONFIG.geoserver.url}/wms`,
+        url: `${CONFIG.geoserver.url}/ows`,
         params: {
             'LAYERS': `${CONFIG.geoserver.workspace}:${CONFIG.geoserver.layer}`,
             'TILED': true,
