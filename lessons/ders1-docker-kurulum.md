@@ -259,9 +259,172 @@ Docker Engine:
 
 ---
 
+### GitHub'dan Projeyi İndirme (Git Clone)
+
+**🎤 Eğitmen der:**
+
+> "Şimdi workshop projemizi GitHub'dan indireceğiz. Tüm dosyalar hazır: Docker yapılandırması, veritabanı, web uygulaması."
+
+#### Git Kurulumu (Eğer yüklü değilse)
+
+**Git Kontrol:**
+
+```powershell
+# Git yüklü mü kontrol et
+git --version
+
+# Beklenen: git version 2.x.x
+```
+
+**Eğer Git yüklü değilse:**
+
+```
+1. https://git-scm.com/download/win adresine git
+2. "Download for Windows" butonuna tıkla
+3. Git-x.x.x-64-bit.exe dosyasını indir ve kur
+4. Varsayılan ayarlarla devam et (Next, Next, ...)
+5. Kurulum bitince terminali yeniden aç
+```
+
+#### Projeyi İndirme
+
+**Adım 1: Proje Klasörü Oluştur**
+
+```powershell
+# PowerShell veya CMD aç
+
+# Çalışma dizinine git (örnek: Masaüstü)
+cd Desktop
+
+# Veya belgelerime
+cd Documents
+
+# Veya istediğiniz bir yer:
+# cd D:\projects
+```
+
+**Adım 2: Git Clone**
+
+```powershell
+# GitHub repository'den projeyi indir
+git clone https://github.com/opengisturkiye/web-gis-vibe-workshop.git
+
+# Beklenen çıktı:
+# Cloning into 'web-gis-vibe-workshop'...
+# remote: Enumerating objects: 50, done.
+# remote: Counting objects: 100% (50/50), done.
+# remote: Compressing objects: 100% (35/35), done.
+# remote: Total 50 (delta 10), reused 45 (delta 8)
+# Receiving objects: 100% (50/50), 25.50 KiB | 2.55 MiB/s, done.
+# Resolving deltas: 100% (10/10), done.
+```
+
+**📊 İndirme Sürecini Göster:**
+
+```
+┌────────────────────────────────────────────────────┐
+│   Git Clone İşlemi                                 │
+├────────────────────────────────────────────────────┤
+│                                                    │
+│   GitHub (Remote)                                  │
+│   ┌──────────────────────────────┐                │
+│   │ opengisturkiye/              │                │
+│   │ web-gis-vibe-workshop        │                │
+│   │                              │                │
+│   │  📁 docker-compose.yml       │                │
+│   │  📁 db/                      │                │
+│   │  📁 web/                     │                │
+│   │  📁 data/                    │                │
+│   │  📄 README.md                │                │
+│   └──────────────────────────────┘                │
+│          │                                         │
+│          │ git clone (indir)                       │
+│          ↓                                         │
+│   Yerel Bilgisayar                                │
+│   ┌──────────────────────────────┐                │
+│   │ Desktop/                     │                │
+│   │ web-gis-vibe-workshop/       │                │
+│   │                              │                │
+│   │  ✓ Tüm dosyalar indirildi   │                │
+│   └──────────────────────────────┘                │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Adım 3: Proje Klasörüne Gir**
+
+```powershell
+# İndirilen klasöre gir
+cd web-gis-vibe-workshop
+
+# İçeriği kontrol et
+dir  # (Windows CMD)
+# veya
+ls   # (PowerShell)
+
+# Beklenen çıktı:
+# Mode                 LastWriteTime         Length Name
+# ----                 -------------         ------ ----
+# d----          05/02/2026    10:00                data
+# d----          05/02/2026    10:00                db
+# d----          05/02/2026    10:00                docs
+# d----          05/02/2026    10:00                lessons
+# d----          05/02/2026    10:00                web
+# -a---          05/02/2026    10:00           1234 docker-compose.yml
+# -a---          05/02/2026    10:00           5678 README.md
+```
+
+**🎤 Eğitmen açıklar:**
+
+> "Bu klasörde ne var?
+> - `docker-compose.yml` → Tüm servislerin tanımı
+> - `db/` → PostgreSQL veritabanı dosyaları
+> - `web/` → Web uygulaması (HTML, CSS, JavaScript)
+> - `data/` → Örnek coğrafi veriler
+> - `docs/` → Dökümanlar
+> - `lessons/` → Ders notları (sizin için hazırladık!)
+> 
+> Hepsi hazır, çalıştırmaya başlayabiliriz!"
+
+**⚠️ Alternatif: Zip İndirme (Git yüklü değilse)**
+
+```
+Eğer Git kurulumu sorun çıkarırsa:
+
+1. Tarayıcıda: https://github.com/opengisturkiye/web-gis-vibe-workshop
+2. Yeşil "Code" butonuna tıkla
+3. "Download ZIP" seç
+4. web-gis-vibe-workshop-main.zip dosyasını indir
+5. Dosyayı sağ tık → "Extract All" → Çıkart
+6. Çıkarılan klasöre gir (web-gis-vibe-workshop-main)
+7. PowerShell'de bu klasöre cd ile git
+```
+
+**💡 Troubleshooting:**
+
+| Sorun | Çözüm |
+|-------|-------|
+| "git: command not found" | Git'i kur: https://git-scm.com/download/win |
+| "Permission denied" | Farklı klasör dene (Desktop yerine Documents) |
+| "fatal: destination path exists" | Klasör zaten var, `cd web-gis-vibe-workshop` yap |
+| İndirme çok yavaş | Zip olarak indir (alternatif yöntem) |
+
+**✅ Proje İndirme Checklist:**
+
+- [ ] Git kurulu (`git --version` çalışıyor)
+- [ ] Proje indirildi (`web-gis-vibe-workshop` klasörü var)
+- [ ] Proje klasörüne girildi (`cd web-gis-vibe-workshop`)
+- [ ] İçerik kontrol edildi (`docker-compose.yml` dosyası görünüyor)
+
+**🎤 Eğitmen kontrol eder:**
+
+> "Herkes `web-gis-vibe-workshop` klasörünün içinde mi? `docker-compose.yml` dosyasını görüyor musunuz? Görmeyenler el kaldırsın!"
+
+---
+
 ### Ders Öncesi Teknik Kontroller (10 dakika önce)
 
-> **Not:** Aşağıdaki komutlar docker kurulumu tamamlandıktan sonra, ders başlamadan önce eğitmen tarafından yapılır.
+> **Not:** Aşağıdaki komutlar docker kurulumu ve proje indirmesi tamamlandıktan sonra, ders başlamadan önce eğitmen tarafından yapılır.
 
 ```bash
 # 1. Docker Desktop çalışıyor mu?
@@ -272,24 +435,29 @@ docker --version
 docker compose version
 # Beklenen: Docker Compose version v2.x.x
 
-# 3. Proje dizinine git
-cd web-gis-vibe-workshop
+# 3. Proje dizininde miyiz?
+pwd  # (PowerShell: Get-Location)
+# Beklenen: .../web-gis-vibe-workshop
 
-# 4. Önceki container'ları temizle (varsa)
+# 4. docker-compose.yml dosyası var mı?
+ls docker-compose.yml
+# Dosya görünmeli
+
+# 5. Önceki container'ları temizle (varsa)
 docker compose down
 
-# 5. Container'ları test başlat
+# 6. Container'ları test başlat
 docker compose up -d
 
-# 6. Container durumlarını kontrol et
+# 7. Container durumlarını kontrol et
 docker ps
 # Beklenen: 3 container "Up" durumunda
 
-# 7. Servisleri test et
+# 8. Servisleri test et
 # - http://localhost:8081 (Web uygulaması)
 # - http://localhost:8080/geoserver (GeoServer - 2-3 dk bekleyebilir)
 
-# 8. Test sonrası durdur
+# 9. Test sonrası durdur
 docker compose down
 ```
 
