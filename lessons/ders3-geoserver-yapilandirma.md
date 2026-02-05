@@ -41,7 +41,7 @@ docker ps | findstr geoserver
 # Beklenen: "Up X minutes"
 
 # 2. GeoServer erişilebilir mi?
-curl http://localhost:8080/geoserver
+curl http://localhost:8088/geoserver  # Port 8088 çakışma önü için
 # Veya tarayıcıda test et
 
 # 3. Login yapılabiliyor mu?
@@ -135,7 +135,7 @@ curl http://localhost:8080/geoserver
 
 **Tarayıcı aç:**
 ```
-http://localhost:8080/geoserver
+http://localhost:8088/geoserver
 ```
 
 **📊 Beklenen: GeoServer Ana Sayfası**

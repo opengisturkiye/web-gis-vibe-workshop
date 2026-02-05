@@ -43,7 +43,7 @@ curl http://localhost:8081
 # Veya tarayıcıda: http://localhost:8081
 
 # 3. GeoServer WMS servisi çalışıyor mu?
-curl "http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetCapabilities"
+curl "http://localhost:8088/geoserver/wms?service=WMS&version=1.1.0&request=GetCapabilities"
 
 # 4. Tarayıcı Developer Tools hazır mı?
 # F12 tuşu ile açılmalı
@@ -379,7 +379,7 @@ body {
 // ═══════════════════════════════════════════════════
 
 const CONFIG = {
-    geoserverUrl: 'http://localhost:8080/geoserver',
+    geoserverUrl: 'http://localhost:8088/geoserver',  // Port 8088 çakışma önü için
     workspace: 'workshop',
     layerName: 'points',
     center: [32.8597, 39.9334], // Ankara [lon, lat]
@@ -464,7 +464,7 @@ const wmsLayer = new ol.layer.Tile({
 **Line 3: `url`**
 
 > "GeoServer WMS endpoint'i:
-> `http://localhost:8080/geoserver/wms`
+> `http://localhost:8088/geoserver/wms`
 > 
 > Template literal kullanıyoruz (backtick)."
 
@@ -745,7 +745,7 @@ map.on('singleclick', function(evt) {
 **GetFeatureInfo isteği:**
 
 ```
-http://localhost:8080/geoserver/wms?
+http://localhost:8088/geoserver/wms?
   SERVICE=WMS&
   VERSION=1.1.1&
   REQUEST=GetFeatureInfo&

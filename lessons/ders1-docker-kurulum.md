@@ -291,16 +291,14 @@ git --version
 **Adım 1: Proje Klasörü Oluştur**
 
 ```powershell
+```powershell
 # PowerShell veya CMD aç
 
-# Çalışma dizinine git (örnek: Masaüstü)
-cd Desktop
+# opengisturkiye klasörünü oluştur
+mkdir opengisturkiye
 
-# Veya belgelerime
-cd Documents
-
-# Veya istediğiniz bir yer:
-# cd D:\projects
+# Oluşturulan klasöre gir
+cd opengisturkiye
 ```
 
 **Adım 2: Git Clone**
@@ -465,7 +463,7 @@ docker compose down
 
 - [ ] **Sunum Slaytları:** Docker mimarisi, Container kavramı
 - [ ] **Terminal:** Büyük font (16pt+), koyu tema
-- [ ] **Tarayıcı:** Bookmark'lar hazır (localhost:8081, localhost:8080/geoserver)
+- [ ] **Tarayıcı:** Bookmark'lar hazır (localhost:8081, localhost:8088/geoserver)
 - [ ] **Ekran Paylaşımı:** Test edildi
 - [ ] **Yedek Plan:** Docker Desktop installer hazır (internet kesilirse)
 
@@ -869,7 +867,7 @@ http://localhost:8081
 
 **Adres çubuğuna yaz:**
 ```
-http://localhost:8080/geoserver
+http://localhost:8088/geoserver
 ```
 
 **Enter tuşuna bas**

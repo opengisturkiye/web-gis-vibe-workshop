@@ -39,7 +39,7 @@ docker ps
 curl http://localhost:8081
 
 # 3. GeoServer WMS çalışıyor mu?
-curl http://localhost:8080/geoserver/wms?service=WMS&request=GetCapabilities
+curl http://localhost:8088/geoserver/wms?service=WFS&request=GetCapabilities
 
 # 4. Örnek görevler hazır mı?
 # Slayt/tahta hazır olmalı
@@ -374,7 +374,7 @@ map.on('pointermove', function(evt) {
 
 ```javascript
 const vectorSource = new ol.source.Vector({
-    url: 'http://localhost:8080/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=workshop:points&outputFormat=application/json',
+    url: 'http://localhost:8088/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=workshop:points&outputFormat=application/json',
     format: new ol.format.GeoJSON()
 });
 ```
