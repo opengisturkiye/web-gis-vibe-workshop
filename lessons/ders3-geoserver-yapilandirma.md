@@ -1209,6 +1209,14 @@ Format: SLD
 > 5. **Mark** → Şekil (circle, square, triangle...)
 > 6. **Fill** → Renk doldurma"
 
+**⚠️ ÖNEMLİ NOT:**
+
+> "SLD'de kullanacağımız type değerleri veritabanındakilerle **TAM OLARAK** eşleşmelidir:
+> - `Tarihi` → Tarihi yerler
+> - `Stadyum` → Futbol stadyumları
+> - `Üniversite` → Eğitim kurumları
+> - Diğer → AVM, İskele, Semt vb"
+
 **Tüm kodu sil ve kategorik stil ekle:**
 
 **Eğitmen tüm metni seçer (Ctrl+A) ve siler**
@@ -1256,13 +1264,13 @@ Format: SLD
           </PointSymbolizer>
         </Rule>
 
-        <!-- KURAL 2: Spor Alanları - MAVİ -->
+        <!-- KURAL 2: Stadyumlar - MAVİ -->
         <Rule>
-          <Name>Spor</Name>
+          <Name>Stadyum</Name>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>type</ogc:PropertyName>
-              <ogc:Literal>Spor</ogc:Literal>
+              <ogc:Literal>Stadyum</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <PointSymbolizer>
@@ -1282,13 +1290,13 @@ Format: SLD
           </PointSymbolizer>
         </Rule>
 
-        <!-- KURAL 3: Eğitim - YEŞİL -->
+        <!-- KURAL 3: Üniversiteler - YEŞİL -->
         <Rule>
-          <Name>Eğitim</Name>
+          <Name>Üniversite</Name>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>type</ogc:PropertyName>
-              <ogc:Literal>Eğitim</ogc:Literal>
+              <ogc:Literal>Üniversite</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <PointSymbolizer>
@@ -1308,7 +1316,7 @@ Format: SLD
           </PointSymbolizer>
         </Rule>
 
-        <!-- KURAL 4: Varsayılan - GRİ (Other türler için) -->
+        <!-- KURAL 4: Varsayılan - GRİ (AVM, İskele, Semt vb) -->
         <Rule>
           <Name>Diğer</Name>
           <PointSymbolizer>
@@ -1340,14 +1348,19 @@ Format: SLD
 > "SLD yapısı:
 > 
 > **Rule 1:** `type = 'Tarihi'` → Kırmızı daire (circle), boyut 10
-> **Rule 2:** `type = 'Spor'` → Mavi kare (square), boyut 10
-> **Rule 3:** `type = 'Eğitim'` → Yeşil üçgen (triangle), boyut 10
+>   Kız Kulesi, Galata Kulesi, Ayasofya vb.
+> 
+> **Rule 2:** `type = 'Stadyum'` → Mavi kare (square), boyut 10
+>   Vodafone Park, Şükrü Saracoğlu, Nef Stadyumu
+> 
+> **Rule 3:** `type = 'Üniversite'` → Yeşil üçgen (triangle), boyut 10
+>   Boğaziçi Üni, İstanbul Üni, İTÜ, YTÜ
+> 
 > **Rule 4:** Diğer türler → Gri daire, boyut 8 (varsayılan)
+>   Forum İstanbul (AVM), Ortaköy (Semt), İskeleler vb.
 >
-> Her şekil:
-> - Fill → İçi rengi
-> - Stroke → Kenar rengi ve kalınlığı
-> - Size → Boyut (pixel)"
+> ⚠️ **ÖNEMLİ:** Rule'lar sırayla değerlendirilir. İlk eşleşen rule uygulanır. 
+> Varsayılan rule (filter'sız) MUTLAKA EN SONDA olmalı!"
 
 **[Validate] butonuna tıkla (Hata kontrolü):**
 
@@ -1451,10 +1464,10 @@ Data → Layer Preview
 │                                                     │
 │       İSTANBUL HARİTASI (TÜREGÖREİ RENKLİ!)       │
 │                                                     │
-│   ◼ ← Mavi kare (Spor)                             │
-│  △ ← Yeşil üçgen (Eğitim)                          │
-│   ● ← Kırmızı daire (Tarihi)                       │
-│   ● ← Gri daire (Diğer)                            │
+│   ◼ ← Mavi kare (Stadyumlar)                        │
+│  △ ← Yeşil üçgen (Üniversiteler)                    │
+│   ● ← Kırmızı daire (Tarihi yerler)                 │
+│   ● ← Gri daire (Diğer: AVM, İskele, Semt)         │
 │                                                     │
 │  [+] [-]  Zoom kontrolleri                         │
 │                                                    │
@@ -1463,9 +1476,16 @@ Data → Layer Preview
 
 **🎤 Eğitmen sevinçle:**
 
-> "SÜPER! Noktalar artık renkli ve türlerine göre organize! Kırmızı Tarihi yerler, Mavi Spor alanları, Yeşil Eğitim kurumları!
+> "MÜKEMMEL! Noktalar artık renkli ve kategoriye göre organize!
 >
-> Bu kategorik stilin avantajları:
+> - **Kırmızı** (5 nokta): Tarihi yerler (Kız Kulesi, Galata Kulesi, Ayasofya, Topkapı, Kapalıçarşı)
+> - **Mavi** (3 nokta): Stadyumlar (Vodafone Park, Şükrü Saracoğlu, Nef Stadyumu)
+> - **Yeşil** (4 nokta): Üniversiteler (Boğaziçi, İ.Ü., İTÜ, YTÜ)
+> - **Gri** (5 nokta): Diğer (Forum İstanbul AVM, Ortaköy Meydanı, Karaköy İskelesi, Üsküdar İskelesi, Beşiktaş İskelesi)
+>
+> Toplam = 17 nokta ✓
+>
+> Kategorik stilin avantajları:
 > - **Veri anlama kolaylaşır** → Renkler anlamı temsil eder
 > - **Harita okunabilirliği artar** → Farklı türleri hızlı görebilirsiniz
 > - **Production ortamına uygun** → Gerçek uygulamalarda böyle kullanılır"
