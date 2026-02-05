@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Web GIS Workshop - Docker, PostGIS, GeoServer ve OpenLayers ile interaktif harita uygulaması">
-    <title>🌍 Web GIS Workshop</title>
+    <meta name="description" content="Web GIS Workshop - GIS Harita Uygulaması">
+    <title>Web GIS Workshop</title>
     
     <!-- OpenLayers CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.5.2/ol.css">
@@ -17,73 +17,73 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h1>🌍 Web GIS</h1>
-                <p class="subtitle">Workshop Uygulaması</p>
+                <h1>Web GIS</h1>
+                <p class="subtitle">Harita Uygulaması</p>
             </div>
 
             <!-- Katman Yönetimi -->
             <section class="sidebar-section">
-                <h2>🗺️ Katmanlar</h2>
+                <h2>Katmanlar</h2>
                 <div class="layer-controls">
                     <label class="checkbox-container">
                         <input type="checkbox" id="wmsLayer" checked>
                         <span class="checkmark"></span>
-                        WMS Katmanı (Noktalar)
+                        Noktalar (WMS)
                     </label>
                     <label class="checkbox-container">
                         <input type="checkbox" id="osmLayer" checked>
                         <span class="checkmark"></span>
-                        OpenStreetMap Altlık
+                        Harita
                     </label>
                     <label class="checkbox-container">
                         <input type="checkbox" id="drawLayer" checked>
                         <span class="checkmark"></span>
-                        Çizim Katmanı
+                        Çizimler
                     </label>
                 </div>
             </section>
 
             <!-- Araçlar -->
             <section class="sidebar-section">
-                <h2>🛠️ Araçlar</h2>
+                <h2>Araçlar</h2>
                 <div class="tool-buttons">
                     <button class="tool-btn" id="drawPolygonBtn" title="Polygon Çiz">
-                        <span class="icon">📐</span>
-                        Çizim (Polygon)
+                        <span class="icon">▭</span>
+                        Polygon
                     </button>
                     <button class="tool-btn" id="drawLineBtn" title="Çizgi Çiz">
-                        <span class="icon">📏</span>
-                        Ölçüm (Line)
+                        <span class="icon">―</span>
+                        Çizgi
                     </button>
                     <button class="tool-btn" id="drawPointBtn" title="Nokta Ekle">
-                        <span class="icon">📍</span>
-                        Nokta Ekle
+                        <span class="icon">●</span>
+                        Nokta
                     </button>
                     <button class="tool-btn danger" id="clearBtn" title="Temizle">
-                        <span class="icon">🗑️</span>
-                        Temizle
+                        <span class="icon">×</span>
+                        Sil
                     </button>
                 </div>
             </section>
 
             <!-- Bilgi Paneli -->
             <section class="sidebar-section">
-                <h2>📊 Bilgi</h2>
+                <h2>Bilgi</h2>
                 <div class="info-panel" id="infoPanel">
-                    <p class="info-hint">Haritada bir noktaya tıklayarak bilgi alabilirsiniz.</p>
+                    <p class="info-hint">Haritada bir noktaya tıklayın</p>
                 </div>
             </section>
 
             <!-- Ölçüm Sonuçları -->
             <section class="sidebar-section">
-                <h2>📐 Ölçümler</h2>
+                <h2>Ölçümler</h2>
                 <div class="measurement-panel" id="measurementPanel">
                     <div class="measurement-item">
-                        <span class="label">Son Mesafe:</span>
+                        <span class="label">Mesafe:</span>
                         <span class="value" id="lastDistance">-</span>
                     </div>
                     <div class="measurement-item">
-                        <span class="label">Son Alan:</span>
+                        <span class="label">Alan:</span>
                         <span class="value" id="lastArea">-</span>
                     </div>
                 </div>
@@ -91,8 +91,7 @@
 
             <!-- Footer -->
             <div class="sidebar-footer">
-                <p>🎓 Vibe Coding Workshop 2026</p>
-                <p class="version">OpenLayers v7.5.2</p>
+                <p>Web GIS Workshop</p>
             </div>
         </aside>
 
