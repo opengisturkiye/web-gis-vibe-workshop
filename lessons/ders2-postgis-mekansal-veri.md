@@ -10,8 +10,9 @@
 |---------|-------|
 | **Süre** | 15 dakika |
 | **Zorluk** | Başlangıç-Orta |
-| **Ön Gereksinim** | Ders 1 tamamlanmış, PostgreSQL container çalışıyor |
-| **Hedef Kitle** | SQL bilgisi olmayanlar da katılabilir |
+| **Ön Gereksinim** | Ders 1 tamamlanmış, DBeaver veya QGIS kurulu |
+| **Hedef Kitle** | SQL bilgisi olmayan ve GUI tercih eden katılımcılar |
+| **Araçlar** | DBeaver (DB GUI) ve/veya QGIS (GIS görselleştirme) |
 
 ---
 
@@ -38,34 +39,39 @@ Bu dersin sonunda katılımcılar şunları yapabilecek:
 docker ps | findstr postgis
 # Beklenen: postgis container "Up" durumunda
 
-# 2. Veritabanına erişim testi
-docker exec -it postgis psql -U gis -d gis -c "SELECT COUNT(*) FROM points;"
-# Beklenen çıktı: 17
+# 2. DBeaver (veya QGIS) kurulu mu?
+# Windows: Başlat Menüsü → DBeaver
+# veya
+# Windows: Başlat Menüsü → QGIS
 
-# 3. PostGIS extension aktif mi?
-docker exec -it postgis psql -U gis -d gis -c "SELECT PostGIS_version();"
-# Beklenen: 3.3.x versiyonu
+# 3. DBeaver'da PostgreSQL bağlantısı yapılandırılmış mı?
+# Bağlantı Ayarları:
+# - Host: localhost
+# - Port: 5454  (değiştirilmiş port!)
+# - Database: gis
+# - Username: gis
+# - Password: gis
 
-# 4. Örnek sorgu testi (mesafe hesaplama)
-docker exec -it postgis psql -U gis -d gis -c "SELECT ST_Distance(ST_MakePoint(29.0041, 41.0211)::geography, ST_MakePoint(28.9742, 41.0256)::geography) / 1000;"
-# Beklenen: ~2.93 km
+# 4. QGIS kullanılacaksa, DB Manager plugin aktif mi?
+# QGIS → Plugins → Manage and Install Plugins → "DB Manager" ara → Yüklü mı?
 ```
 
 ### Materyal Hazırlığı
 
-- [ ] **Terminal:** Büyük font, SQL syntax highlighting
+- [ ] **DBeaver:** Kurulu ve PostgreSQL bağlantısı yapılandırılmış
+- [ ] **QGIS:** (Opsiyonel) Kurulu ve DB Manager plugin'i aktif
 - [ ] **Slayt:** PostGIS veri türleri diyagramı
-- [ ] **İstanbul Haritası:** Noktaların konumlarını göster (google maps/OSM)
-- [ ] **SQL Komutları Dökümanı:** Yazdır veya ekranda hazır tut
+- [ ] **İstanbul Haritası:** QGIS'te açılmış (görselleştirme için)
+- [ ] **Proje:** `web-gis-vibe-workshop` DBeaver'da açılmış
 
 ### Öğretim Stratejisi
 
 **Pedagojik Yaklaşım:**
 
-1. **Show, Don't Tell:** Sorguları önce çalıştır, sonra açıkla
-2. **Baby Steps:** SQL bilmeyenleri kaybetme, temel komutlardan başla
-3. **Visual Learning:** Geometrileri görselleştir (WKT formatı)
-4. **Real-World Context:** İstanbul mekanları → somut örnekler
+1. **Görsel Keşfetme:** Terminal yerine GUI arayüz (daha kolay)
+2. **Point-and-Click:** SQL yazmazlar, query builder kullanırlar
+3. **Immediate Visualization:** QGIS'te noktaları harita üzerinde göster
+4. **Real-World Tools:** Profesyonel DB yönetim araçları
 
 ---
 
@@ -75,11 +81,11 @@ docker exec -it postgis psql -U gis -d gis -c "SELECT ST_Distance(ST_MakePoint(2
 
 **🎤 Eğitmen Konuşması:**
 
-> "İlk derste container'ları başlattık. Şimdi içine girip ne olduğunu görelim!
+> "İlk derste container'ları başlattık. Şimdi içindeki veriyi görsel araçlarla keşfedeceğiz!
 >
 > PostgreSQL dünyanın en gelişmiş açık kaynak veritabanıdır. PostGIS ise ona 'coğrafi süper güçler' ekleyen bir eklentidir.
 >
-> Normal veritabanları sayılar, metinler tutar. PostGIS ise **noktalar, çizgiler, poligonlar** tutar. Ve bunlarla **mekansal hesaplamalar** yapar."
+> Normal veritabanları sayılar, metinler tutar. PostGIS ise **noktalar, çizgiler, poligonlar** tutar. Bugün bunu DBeaver ve QGIS ile göreceğiz!"
 
 **📊 Slayt Göster: PostGIS Veri Türleri**
 
@@ -108,284 +114,301 @@ docker exec -it postgis psql -U gis -d gis -c "SELECT ST_Distance(ST_MakePoint(2
 
 **🎤 Eğitmen açıklar:**
 
-> "Bizim projemizde 17 nokta verisi var: Galata Kulesi, Kız Kulesi, stadyumlar, üniversiteler... Hepsi POINT türünde. Şimdi bu verileri sorgulayalım!"
+> "Bizim projemizde 17 nokta verisi var: Galata Kulesi, Kız Kulesi, stadyumlar, üniversiteler... Hepsi POINT türünde. Şimdi bu verileri görsel araçlarla sorgulayalım!"
 
 ---
 
-### Adım 1: PostgreSQL Container'ına Giriş (3 dakika)
+### Adım 1: DBeaver ile PostgreSQL'e Bağlantı (3 dakika)
 
 **🎤 Eğitmen der:**
 
-> "Container'ın içine girmek için `docker exec` komutunu kullanacağız. Bu, container'da komut çalıştırmamızı sağlar."
+> "DBeaver, database'leri yönetmek için profesyonel bir araç. Terminal yerine görseli tercih ediyoruz - daha kolay!"
+
+#### DBeaver Kurulumu (ilk kez ise)
+
+**Eğitmen eğer DBeaver kurulu değilse:**
+
+```
+1. https://dbeaver.io/download/ adresine git
+2. "Download DBeaver Community" butonuna tıkla
+3. Windows installer'ı indir (.exe)
+4. Çalıştır, "Next" ile devam et, "Finish"
+5. DBeaver açılır, birkaç saniye başlama süresi var
+```
+
+#### DBeaver'da Bağlantı Kurma
 
 **👨‍🏫 Canlı Demo:**
 
-**Terminal ekranında (büyük font):**
+**DBeaver açık ekranda:**
 
-```powershell
-docker exec -it postgis psql -U gis -d gis
-```
+**Sol panel: "Database" sekmesi**
 
-**Komut açıklaması (Enter'dan önce):**
-
-**🎤 Eğitmen der:**
-
-> "Bu komutu parçalayalım:
-> 
-> `docker exec` → Container'da komut çalıştır
-> `-it` → Interactive terminal (klavyeden girdi alabilir)
-> `postgis` → Container adı
-> `psql` → PostgreSQL CLI (Command Line Interface)
-> `-U gis` → Kullanıcı adı: gis
-> `-d gis` → Veritabanı adı: gis"
-
-**Enter tuşuna bas!**
-
-**📊 Beklenen Çıktı:**
+**Sağ tık → "New Database Connection"**
 
 ```
-psql (15.x)
-Type "help" for help.
+1. PostgreSQL seç
+2. "Next"
+3. Bağlantı ayarları doldur:
+   - Name: gis-workshop (veya istediğin ad)
+   - Host: localhost
+   - Port: 5454  ⚠️ (değiştirilmiş port!)
+   - Database: gis
+   - Username: gis
+   - Password: gis
+4. "Test Connection" butonuna tıkla
+```
 
-gis=#
+**📊 Test Başarılı:**
+
+```
+Connected successfully ✓
+```
+
+**Eğer başarısız:**
+
+```
+ERROR: Connection refused
+
+Çözüm:
+1. PostgreSQL container çalışıyor mu? (docker ps)
+2. Port 5454 doğru mu? (docker-compose.yml kontrol et)
+3. Şifre doğru mu?
 ```
 
 **🎤 Eğitmen açıklar:**
 
-> "Gördünüz mü `gis=#` promptunu? Artık PostgreSQL terminal içindeyiz. SQL sorguları yazabiliriz!
->
-> `#` işareti, yönetici (superuser) yetkileriyle giriş yaptığımızı gösterir."
+> "Bağlantı kuruldu! Şimdi verileri görebiliyoruz."
+
+**"Finish" butonuna tıkla**
+
+**📊 Beklenen Ekran:**
+
+DBeaver sol panelinde:
+
+```
+Databases
+└── gis-workshop
+    ├── Schemas
+    │   └── public
+    │       └── Tables
+    │           ├── points
+    │           ├── polygons
+    │           └── lines
+    └── Other Objects
+```
 
 **⚠️ Kritik Kontrol Noktası:**
 
 **Eğitmen sorar:**
 
-> "Herkes `gis=#` promptunu görüyor mu? Görmeyenler el kaldırsın!"
-
-**Yaygın Sorun: "Error: No such container"**
-
-```powershell
-# Container adı doğru mu kontrol et
-docker ps
-
-# postgis container çalışıyor mu?
-# Çalışmıyorsa:
-docker compose restart postgis
-```
+> "Herkes sol panelde `points`, `polygons`, `lines` tablolarını görüyor mu?"
 
 ---
 
-### Adım 2: Tabloları Listeleme (2 dakika)
+### Adım 2: Tabloyu İnceleme (2 dakika)
 
 **🎤 Eğitmen der:**
 
-> "İlk yapalım: Hangi tablolar var?"
+> "Şimdi tablo yapısına bakalım."
 
 **👨‍🏫 Canlı Demo:**
 
-**psql terminalinde yaz:**
+**Sol panel → Tables → `points` tablosuna çift tıkla**
 
-```sql
-\dt
-```
-
-**📝 Not:** `\dt` bir psql komutu (meta-command), SQL değil. Backslash ile başlar.
-
-**📊 Beklenen Çıktı:**
+**📊 Açılan Pencere:**
 
 ```
-            List of relations
- Schema |   Name   | Type  | Owner
---------+----------+-------+-------
- public | points   | table | gis
- public | polygons | table | gis
- public | lines    | table | gis
-(3 rows)
-```
-
-**🎤 Eğitmen açıklar:**
-
-> "3 tablomuz var:
-> 
-> 1. **points** → Nokta verileri (ÇOK DOLU, 17 satır)
-> 2. **polygons** → Poligon verileri (BOŞ, çizim için)
-> 3. **lines** → Çizgi verileri (BOŞ, ölçüm için)
->
-> Şimdi `points` tablosunu inceleyelim!"
-
-**💡 Ek Bilgi (zaman varsa):**
-
-```sql
--- Tablo yapısını göster
-\d points
-```
-
-**Çıktı:**
-
-```
-                      Table "public.points"
-   Column    |          Type          | Collation | Nullable | Default
--------------+------------------------+-----------+----------+---------
- id          | integer                |           | not null | nextval(...)
- name        | character varying(255) |           | not null |
- type        | character varying(100) |           |          |
- description | text                   |           |          |
- geom        | geometry(Point,4326)   |           |          |
- created_at  | timestamp              |           |          | now()
-```
-
-**Eğitmen vurgular:**
-
-> "`geom` sütununa dikkat! Türü `geometry(Point,4326)`:
-> - **Point:** Geometri türü
-> - **4326:** EPSG kodu (WGS84 koordinat sistemi)"
-
----
-
-### Adım 3: Nokta Verilerini Görüntüleme (3 dakika)
-
-**🎤 Eğitmen der:**
-
-> "Tüm noktaları listeleyelim. Klasik SQL sorgusu!"
-
-**👨‍🏫 Canlı Demo:**
-
-```sql
-SELECT * FROM points;
-```
-
-**Enter tuşuna bas!**
-
-**📊 Beklenen Çıktı (kısaltılmış):**
-
-```
- id |          name           |    type    |           description            |                    geom                     |     created_at
-----+-------------------------+------------+----------------------------------+--------------------------------------------+--------------------
-  1 | Kız Kulesi              | Tarihi     | İstanbul Boğazı'nın simgesi...  | 0101000020E6100000D9CEF753E33D3D40...       | 2024-01-15 10:30:00
-  2 | Galata Kulesi           | Tarihi     | Beyoğlu'nda yer alan...          | 0101000020E6100000713D0AD7A33C3D40...       | 2024-01-15 10:30:01
-  3 | Ayasofya Camii          | Tarihi     | Bizans döneminde...              | 0101000020E6100000C3F5285C8F3C3D40...       | 2024-01-15 10:30:02
- ...
-(17 rows)
-```
-
-**🎤 Eğitmen açıklar:**
-
-> "17 satır gördünüz mü? Her satır bir mekan.
->
-> Ama `geom` sütunu okunamıyor! `01010000...` gibi hex kodlar. Bu binary format. PostGIS dahili formatı. Biz insanlar için daha okunabilir bir formata çevirelim!"
-
-**⚠️ Kritik Kontrol Noktası:**
-
-**Eğitmen sorar:**
-
-> "Herkes 17 satır görüyor mu? Name sütununda 'Galata Kulesi', 'Kız Kulesi' gibi yerler var mı?"
-
----
-
-### Adım 4: Geometriyi İnsan Okunabilir Formatta Gösterme (3 dakika)
-
-**🎤 Eğitmen der:**
-
-> "Şimdi PostGIS'in süper gücünü göreceğiz: `ST_AsText()` fonksiyonu!"
-
-**👨‍🏫 Canlı Demo:**
-
-```sql
-SELECT id, name, type, ST_AsText(geom) as koordinat
-FROM points;
-```
-
-**📝 Açıklama (Enter'dan önce):**
-
-**🎤 Eğitmen der:**
-
-> "`ST_AsText()` → 'Spatial Type As Text'
-> Geometriyi WKT (Well-Known Text) formatına çevirir.
->
-> WKT formatı coğrafi verilerin standart metin gösterimidir. Örnek:
-> `POINT(29.0041 41.0211)` → Boylam 29.00°, Enlem 41.02°"
-
-**Enter tuşuna bas!**
-
-**📊 Beklenen Çıktı:**
-
-```
- id |          name           |    type    |         koordinat
-----+-------------------------+------------+---------------------------
-  1 | Kız Kulesi              | Tarihi     | POINT(29.0041 41.0211)
-  2 | Galata Kulesi           | Tarihi     | POINT(28.9742 41.0256)
-  3 | Ayasofya Camii          | Tarihi     | POINT(28.98 41.0086)
-  4 | Topkapı Sarayı          | Tarihi     | POINT(28.9833 41.0115)
-  5 | Kapalıçarşı             | Tarihi     | POINT(28.968 41.0107)
-  6 | Vodafone Park           | Stadyum    | POINT(29.027 41.0392)
-  7 | Şükrü Saracoğlu Stadı   | Stadyum    | POINT(29.0367 40.9878)
-  8 | Nef Stadyumu            | Stadyum    | POINT(28.9947 41.1035)
-  9 | Forum İstanbul          | AVM        | POINT(28.8097 41.0556)
- 10 | Boğaziçi Üniversitesi   | Üniversite | POINT(29.0449 41.0839)
- 11 | İstanbul Üniversitesi   | Üniversite | POINT(28.9643 41.0119)
- 12 | İTÜ Ayazağa             | Üniversite | POINT(29.025 41.105)
- 13 | YTÜ Davutpaşa           | Üniversite | POINT(28.892 41.022)
- 14 | Ortaköy Meydanı         | Semt       | POINT(29.0281 41.0482)
- 15 | Karaköy İskelesi        | İskele     | POINT(28.977 41.0217)
- 16 | Üsküdar İskelesi        | İskele     | POINT(29.0155 41.0263)
- 17 | Beşiktaş İskelesi       | İskele     | POINT(29.0237 41.0425)
-(17 rows)
+┌─────────────────────────────────────────┐
+│ points                                  │
+├──────────────┬─────────┬────────────────┤
+│ Column       │ Type    │ Not Null       │
+├──────────────┼─────────┼────────────────┤
+│ id           │ integer │ ✓              │
+│ name         │ varchar │ ✓              │
+│ type         │ varchar │                │
+│ description  │ text    │                │
+│ geom         │ geometry(Point,4326) │   │
+│ created_at   │ timestamp │ default now()│
+└──────────────┴─────────┴────────────────┘
 ```
 
 **🎤 Eğitmen vurgular:**
 
-> "Harika! Artık koordinatları okuyabiliyoruz!
->
-> Örneğin Galata Kulesi:
-> `POINT(28.9742 41.0256)`
-> 
-> - **28.9742** → Boylam (Longitude, X ekseni, Doğu-Batı)
-> - **41.0256** → Enlem (Latitude, Y ekseni, Kuzey-Güney)
->
-> Bu koordinatlar **WGS84** sisteminde (EPSG:4326). GPS cihazlarının da kullandığı sistem!"
-
-**📍 Görsel Açıklama:**
-
-**Eğitmen harita gösterir (tarayıcıda):**
-
-Google Maps veya OpenStreetMap'te koordinatları göster:
-
-```
-https://www.google.com/maps?q=41.0256,28.9742
-```
-
-**Eğitmen der:**
-
-> "Bu koordinatı Google Maps'e yapıştırırsanız Galata Kulesi'ni göreceksiniz!"
-
-**💡 İleri Seviye Not (zaman varsa):**
-
-```sql
--- JSON formatında da gösterebiliriz
-SELECT id, name, ST_AsGeoJSON(geom) as geojson
-FROM points
-LIMIT 3;
-```
-
-**Çıktı:**
-
-```json
-{"type":"Point","coordinates":[29.0041,41.0211]}
-```
+> "`geom` sütununa dikkat! Türü `geometry(Point,4326)`:
+> - **Point:** Geometri türü (nokta)
+> - **4326:** EPSG kodu (WGS84 koordinat sistemi)"
 
 ---
 
-### Adım 5: Mekansal Sorgu - Mesafe Hesaplama (5 dakika)
+### Adım 3: Verileri Görüntüleme (2 dakika)
 
 **🎤 Eğitmen der:**
 
-> "PostGIS'in asıl gücü şimdi ortaya çıkacak! İki nokta arası mesafeyi hesaplayalım.
+> "Şimdi tüm 17 noktayı göreceğiz."
+
+**👨‍🏫 Canlı Demo:**
+
+**Sol panel → Tables → `points` → Sağ tık → "View Data"**
+
+**📊 Açılan Tablo:**
+
+```
+┌────┬──────────────────────┬──────────┬─────────────────────────────────┬────────────────┐
+│ id │ name                 │ type     │ description                     │ geom (geometry)│
+├────┼──────────────────────┼──────────┼─────────────────────────────────┼────────────────┤
+│ 1  │ Kız Kulesi           │ Tarihi   │ İstanbul Boğazı'nın simgesi...  │ POINT (visible)
+│ 2  │ Galata Kulesi        │ Tarihi   │ Beyoğlu'nda yer alan...         │ POINT (visible)
+│ 3  │ Ayasofya Camii       │ Tarihi   │ Bizans döneminde...             │ POINT (visible)
+│ 4  │ Topkapı Sarayı       │ Tarihi   │ ...                             │ POINT (visible)
+│ 5  │ Kapalıçarşı          │ Tarihi   │ ...                             │ POINT (visible)
+│ 6  │ Vodafone Park        │ Stadyum  │ ...                             │ POINT (visible)
+│ 7  │ Şükrü Saracoğlu Std  │ Stadyum  │ ...                             │ POINT (visible)
+│ 8  │ Nef Stadyumu         │ Stadyum  │ ...                             │ POINT (visible)
+│ 9  │ Forum İstanbul       │ AVM      │ ...                             │ POINT (visible)
+│10  │ Boğaziçi Üniversitesi│ Üniversite│...                             │ POINT (visible)
+│11  │ İstanbul Üniversitesi│ Üniversite│...                             │ POINT (visible)
+│12  │ İTÜ Ayazağa          │ Üniversite│...                             │ POINT (visible)
+│13  │ YTÜ Davutpaşa        │ Üniversite│...                             │ POINT (visible)
+│14  │ Ortaköy Meydanı      │ Semt     │ ...                             │ POINT (visible)
+│15  │ Karaköy İskelesi     │ İskele   │ ...                             │ POINT (visible)
+│16  │ Üsküdar İskelesi     │ İskele   │ ...                             │ POINT (visible)
+│17  │ Beşiktaş İskelesi    │ İskele   │ ...                             │ POINT (visible)
+└────┴──────────────────────┴──────────┴─────────────────────────────────┴────────────────┘
+```
+
+**🎤 Eğitmen açıklar:**
+
+> "17 satır, 17 mekan! Her birinin geometrisi (geom sütunu) var. Sağda 'POINT (visible)' yazısı gösteriyor.
+>
+> Haritada görmek ister misiniz? QGIS'e geçelim!"
+
+**⚠️ Kritik Kontrol Noktası:**
+
+**Eğitmen sorar:**
+
+> "Herkes 17 satırı görebiliyor mu? Galata Kulesi, Kız Kulesi, stadyumlar, üniversiteler var mı?"
+
+---
+
+### Adım 4: QGIS ile Verileri Görselleştirme (5 dakika)
+
+**🎤 Eğitmen der:**
+
+> "DBeaver tablo görüntülüyor. QGIS harita gösteriyor. Noktaları harita üzerinde görelim!"
+
+#### QGIS Kurulumu (ilk kez ise)
+
+**Eğitmen eğer QGIS kurulu değilse:**
+
+```
+1. https://qgis.org/download/ adresine git
+2. "QGIS x.x.x for Windows (OSGeo4W)" indir
+3. OSGeo4W installer'ı çalıştır
+4. "Advanced Install" seç
+5. QGIS "Desktop" seç
+6. "Finish"
+```
+
+#### QGIS'te PostGIS Verilerini Açma
+
+**👨‍🏫 Canlı Demo:**
+
+**QGIS açık:**
+
+**Üst menu → Layer → Data Source Manager**
+
+```
+veya Ctrl+L
+```
+
+**Sol panel → "PostgreSQL" sekmesi**
+
+**"New" butonuna tıkla:**
+
+```
+Name: gis-workshop
+Host: localhost
+Port: 5454  ⚠️ (değiştirilmiş port!)
+Database: gis
+User: gis
+Password: gis
+```
+
+**"OK"**
+
+**📊 Beklenen:**
+
+Sol panelde "PostgreSQL" altında:
+
+```
+gis-workshop
+└── public
+    ├── points (Geometry)
+    ├── polygons (Geometry)
+    └── lines (Geometry)
+```
+
+**Çift tıkla `points` → Haritaya eklenir**
+
+**📊 Beklenen Harita:**
+
+```
+┌──────────────────────────────────────┐
+│                                      │
+│  ╔════════════════════════════╗     │
+│  ║  QGIS Harita               ║     │
+│  ╟────────────────────────────╢     │
+│  ║                            ║     │
+│  ║      • (nokta 1)           ║     │
+│  ║   •        •               ║     │
+│  ║      •  •   • • •          ║     │
+│  ║    •    •      • •         ║     │
+│  ║       •   •                ║     │
+│  ║                            ║     │
+│  ║  [+] [-] → ↑ ↓ Pan zoom    ║     │
+│  ╚════════════════════════════╝     │
+│                                      │
+│  Layers:                             │
+│  ✓ points (17 features)              │
+│                                      │
+└──────────────────────────────────────┘
+```
+
+**🎤 Eğitmen heyecanla:**
+
+> "İşte! 17 nokta harita üzerinde! İstanbul'un dört bir yanında dağılmışlar. Galata Kulesi, Kız Kulesi, stadyumlar, üniversiteler... hepsi görünüyor!
+>
+> Harita zoom ve pan yapabilir, noktaya tıklayıp özniteliklerini görebilirsiniz!"
+
+**💡 Interaktif Keşfetme:**
+
+**Eğitmen katılımcılarla:**
+
+1. **Harita üzerinde zoom:** Scroll tekerlek
+2. **Pan (kaydırma):** Sağ tık + sürükle
+3. **Noktaya tıkla:** Popup açılır
+4. **Öznitelikler:** Altta öznitelikleri görünt
+
+---
+
+### Adım 5: DBeaver'da SQL Sorgu - Mesafe Hesaplama (3 dakika)
+
+**🎤 Eğitmen der:**
+
+> "Şimdi en başarılı kısım: PostGIS'in mekansal fonksiyonlarını deneyelim!
 >
 > Soru: Kız Kulesi ile Galata Kulesi arası kaç kilometre?"
 
 **👨‍🏫 Canlı Demo:**
 
-**Sorguyu yavaşça yaz (her satırı açıklayarak):**
+**DBeaver'da sağ panelin üstündeki sekme:**
+
+**"SQL Editor" sekmesini aç (veya SQL sekmesi)**
+
+**Veya: Tools → SQL Editor → "SQL Editor"**
+
+**Aşağıdaki sorguyu yaz:**
 
 ```sql
 SELECT 
@@ -396,80 +419,51 @@ FROM points a, points b
 WHERE a.id = 1 AND b.id = 2;
 ```
 
-**Satır Satır Açıklama (Enter'dan önce):**
-
-**🎤 Eğitmen açıklar:**
-
-**Satır 1-2:**
-> "`a.name as nokta1` → İlk noktanın adı
-> `b.name as nokta2` → İkinci noktanın adı
-> Alias kullanıyoruz (`as`)"
-
-**Satır 3:**
-> "`ST_Distance(geom1, geom2)` → PostGIS mesafe fonksiyonu
->
-> **ÇOK ÖNEMLİ:** `::geography` cast yapıyoruz!
->
-> - **geometry:** Düz projeksiyon (metre değil, derece)
-> - **geography:** Küresel yüzey (gerçek dünya, metre)
->
-> Dünya düz değil, küreseldir! O yüzden `geography` kullanıyoruz.
->
-> `/ 1000` → Metreyi kilometreye çevir"
-
-**Satır 4:**
-> "`FROM points a, points b` → Self-join (tabloyu kendisiyle birleştir)
-> `a` ve `b` aynı tablo, farklı alias'lar"
-
-**Satır 5:**
-> "`WHERE a.id = 1 AND b.id = 2`
-> - ID 1 → Kız Kulesi
-> - ID 2 → Galata Kulesi"
-
-**Enter tuşuna bas!**
+**Sorguyu seç → Ctrl+Enter veya sağ tık → "Execute"**
 
 **📊 Beklenen Çıktı:**
 
 ```
-   nokta1    |    nokta2     | mesafe_km
--------------+---------------+------------
- Kız Kulesi  | Galata Kulesi |      2.93
-(1 row)
+nokta1          | nokta2           | mesafe_km
+─────────────────┼──────────────────┼──────────
+Kız Kulesi      | Galata Kulesi    | 2.93
 ```
 
-**🎤 Eğitmen heyecanla:**
+**🎤 Eğitmen vurgular:**
 
-> "**2.93 kilometre!** Bu, kuş uçuşu mesafedir. PostGIS, dünya yüzeyinde gerçek mesafeyi hesapladı!
+> "**2.93 kilometre!** PostGIS, dünya yüzeyinde gerçek mesafeyi hesapladı!
 >
-> İnanılmaz değil mi? Tek bir SQL sorgusuyla!"
+> Tek bir SQL sorgusuyla! DBeaver'da komutun yanı sıra sonuç hemen görünüyor."
 
-**🗺️ Doğrulama:**
+**🗺️ QGIS'te Görselleştirme:**
 
-**Eğitmen tarayıcıda gösterir:**
-
-Google Maps Distance Tool:
+**Eğitmen QGIS haritasında gösterir:**
 
 ```
-Kız Kulesi: 41.0211, 29.0041
-Galata Kulesi: 41.0256, 28.9742
-
-Mesafe: ~2.9 km ✓
+Kız Kulesi (nokta 1)
+    |
+    |  2.93 km
+    |
+Galata Kulesi (nokta 2)
 ```
 
 **⚠️ Kritik Kontrol Noktası:**
 
 **Eğitmen sorar:**
 
-> "Herkes 2.93 km sonucunu gördü mü? Farklı bir değer alanlar var mı?"
+> "Herkes 2.93 km sonucunu gördü mü? DBeaver'da sorgu çalıştırabildi mi?"
 
-**💡 Deneysel Öğrenme:**
+---
 
-**Eğitmen der:**
+### Adım 6: Başka Sorguları Deneme (2 dakika)
 
-> "Başka noktalar deneyelim! Mesela Boğaziçi Üniversitesi ile İTÜ arası?"
+**🎤 Eğitmen der:**
+
+> "Başka noktalar deneyelim!"
+
+**Örnek 1: Boğaziçi Üni ile İTÜ arası:**
 
 ```sql
--- Boğaziçi Üni (id=10) ile İTÜ (id=12) arası
 SELECT 
   a.name as nokta1,
   b.name as nokta2,
@@ -478,118 +472,68 @@ FROM points a, points b
 WHERE a.id = 10 AND b.id = 12;
 ```
 
-**Çıktı:**
+**Sonuç: 2.69 km**
 
-```
-        nokta1          |    nokta2   | mesafe_km
-------------------------+-------------+-----------
- Boğaziçi Üniversitesi  | İTÜ Ayazağa |     2.69
-```
-
-**🎤 Eğitmen der:**
-
-> "2.69 km! Kampüsler birbirine çok yakınmış."
-
-**📚 Diğer PostGIS Fonksiyonları (Hızlı Tanıtım):**
-
-**Eğitmen slayt gösterir veya tahtaya yazar:**
+**Örnek 2: Belirli tipe ait noktaları listele:**
 
 ```sql
--- Alan hesaplama (poligon için)
-ST_Area(geom::geography)
-
--- Çizgi uzunluğu
-ST_Length(geom::geography)
-
--- Nokta içinde mi? (Point in Polygon)
-ST_Contains(polygon, point)
-
--- Kesişiyor mu?
-ST_Intersects(geom1, geom2)
-
--- Buffer (etki alanı)
-ST_Buffer(geom, distance)
-
--- Centroid (merkez nokta)
-ST_Centroid(geom)
+SELECT name, type, ST_AsText(geom) as koordinat
+FROM points
+WHERE type = 'Stadyum'
+ORDER BY name;
 ```
 
-**🎤 Eğitmen der:**
+**Sonuç:**
 
-> "PostGIS'te 300+ mekansal fonksiyon var! İleri derslerde daha fazlasını öğrenebilirsiniz."
-
----
-
-### Adım 6: PostgreSQL Terminalinden Çıkış (1 dakika)
-
-**🎤 Eğitmen der:**
-
-> "Dersi bitirmeden önce çıkalım. psql'den çıkmak için:"
-
-```sql
-\q
 ```
-
-**Enter tuşuna bas!**
-
-**📊 Beklenen:**
-
-Terminal normal PowerShell/Bash prompt'una döner:
-
-```powershell
-PS C:\Users\username\web-gis-vibe-workshop>
+name                    | type    | koordinat
+────────────────────────┼─────────┼──────────────────────
+Nef Stadyumu            | Stadyum | POINT(28.9947 41.1035)
+Şükrü Saracoğlu Stadı   | Stadyum | POINT(29.0367 40.9878)
+Vodafone Park           | Stadyum | POINT(29.027 41.0392)
 ```
 
 **🎤 Eğitmen açıklar:**
 
-> "`\q` → quit (çık)
-> PostgreSQL terminalinden çıktık, ama container hâlâ çalışıyor. Veriler kaybolmadı!"
+> "PostGIS SQL'i çok güçlü! Mesafe, filtreleme, geometri dönüşümü... hepsi tek platform'da!"
 
 ---
 
 ### Kapanış ve Özet (1 dakika)
-
-**🎤 Eğitmen der:**
-
-> "Tebrikler! PostGIS'i keşfettik. Hızlı bir özet:"
 
 **📊 Slayt Göster: Ders 2 Özeti**
 
 ```
 ✅ TAMAMLANAN GÖREVLER
 ─────────────────────────────────────────
-✓ docker exec ile PostgreSQL container'ına girildi
-✓ psql CLI kullanıldı
-✓ Tablolar listelendi (\dt)
+✓ DBeaver PostgreSQL bağlantısı kuruldu
+✓ Tablo yapısı (schema) incelendi
 ✓ 17 nokta verisi görüntülendi
-✓ ST_AsText() ile WKT formatı öğrenildi
+✓ QGIS'te noktalar harita üzerinde gösterildi
+✓ PostGIS mekansal sorguları çalıştırıldı
 ✓ ST_Distance() ile mesafe hesaplandı
-✓ geography vs geometry farkı anlaşıldı
 
 📚 ÖĞRENİLEN KAVRAMLAR
 ─────────────────────────────────────────
 • PostGIS extension nedir?
 • Geometri veri türleri (POINT, LINESTRING, POLYGON)
-• WKT (Well-Known Text) formatı
-• EPSG:4326 (WGS84) koordinat sistemi
+• DBeaver - GUI database yönetimi
+• QGIS - GIS görselleştirme platformu
 • Mekansal fonksiyonlar (ST_Distance, ST_AsText)
 • geography vs geometry cast
-• Self-join kavramı
+• SQL SELECT, JOIN, WHERE kullanımı
 
-📐 KULLANILAN SQL KOMUTLARI
+🛠️ KULLANILAN ARAÇLAR
 ─────────────────────────────────────────
-\dt                              → Tabloları listele
-\d points                        → Tablo yapısı
-SELECT * FROM points;            → Tüm kayıtlar
-ST_AsText(geom)                  → WKT formatı
-ST_Distance(g1, g2)              → Mesafe
-geom::geography                  → Tip dönüşümü
-\q                               → Çıkış
+• DBeaver Community      → Database yönetimi
+• QGIS 3.x              → Coğrafi görselleştirme
+• DB Manager (QGIS)     → PostGIS bağlantısı
+• SQL Editor (DBeaver)  → Sorgu yazma/çalıştırma
 ```
 
 **🎤 Eğitmen vurgular:**
 
-> "Artık mekansal veri sorgulayabiliyorsunuz! Sonraki derste bu verileri GeoServer'da WMS servisi olarak yayınlayacağız. Haritada görsel olarak göreceğiz!"
+> "Artık mekansal veriyi hem tablo olarak (DBeaver) hem harita olarak (QGIS) görebiliyorsunuz! Sonraki derste bu verileri GeoServer'da WMS servisi olarak yayınlayacağız. Web tarayıcısından herkes görebilecek!"
 
 ---
 
@@ -598,129 +542,165 @@ geom::geography                  → Tip dönüşümü
 ### Ders Başında
 
 - [ ] postgis container "Up" durumunda
-- [ ] Terminal font büyük ve okunabilir
-- [ ] Örnek koordinatlar tarayıcıda test edildi
-- [ ] SQL komutları hazır (copy-paste için)
+- [ ] DBeaver kurulu ve PostgreSQL bağlantısı yapılandırılmış
+- [ ] QGIS kurulu (opsiyonel)
+- [ ] Port 5454 kullanıldığı doğrulandı
+- [ ] Bağlantı test edildi
 
 ### Ders Sırasında
 
-- [ ] Her SQL komutu çalıştırılmadan önce açıklandı
-- [ ] Çıktılar ekranda yeterince uzun süre gösterildi
-- [ ] Katılımcılar komutları takip edebiliyor
+- [ ] Her sorgu ekranda açık ve okunabilir
+- [ ] QGIS haritası yeterince büyük gösterildi
+- [ ] Katılımcılar takip edebiliyor
 - [ ] Zaman yönetimi (15 dk)
 
 ### Ders Sonunda
 
 - [ ] Herkes mesafe hesaplama sorgusunu çalıştırabildi
-- [ ] \q komutuyla çıkış yapıldı
-- [ ] Container hâlâ çalışıyor (Ders 3 için)
+- [ ] Harita üzerinde noktalar görünüyor
+- [ ] Sonraki ders için container'lar çalışıyor
 
 ---
 
 ## 🔧 Troubleshooting Rehberi
 
-### 1. "psql: FATAL: role 'gis' does not exist"
+### 1. DBeaver PostgreSQL Bağlantısı Başarısız
+
+**Hata: "Connection refused"**
 
 **Çözüm:**
 
-```powershell
-# Kullanıcı adını kontrol et
-docker exec -it postgis psql -U gis -d gis
+```
+1. Port 5454 doğru mu?
+   docker-compose.yml'de kontrol et:
+   ports:
+     - "5454:5432"
 
-# -U gis kısmı önemli!
+2. Container çalışıyor mu?
+   docker ps | findstr postgis
+
+3. Şifre doğru mu?
+   Username: gis
+   Password: gis
+
+4. Bilgisayar firewall'u engellemiyor mu?
+   → Windows Defender Firewall → Allow through firewall
 ```
 
-### 2. "ERROR: relation 'points' does not exist"
+### 2. QGIS DB Manager PostgreSQL Bağlantısı
 
-**Veri yüklenmemiş:**
+**Hata: "Could not load the layer"**
 
-```powershell
-# Init script çalıştı mı kontrol et
-docker compose logs postgis | findstr "PostgreSQL init process complete"
+**Çözüm:**
 
-# Yoksa container'ı yeniden başlat
-docker compose down
-docker compose up -d
+```
+1. QGIS → Plugins → Manage and Install Plugins
+2. "DB Manager" ara ve yüklü olduğunu doğrula
+3. Bağlantı ayarları (Host, Port, Database, User, Password) kontrol et
+4. Port 5454 mü yazıldı?
 ```
 
-### 3. Türkçe Karakterler Bozuk
+### 3. QGIS Harita Boş/Noktalar Görünmüyor
 
-**psql'de encoding ayarla:**
+**Çözüm:**
 
-```sql
-\encoding UTF8
+```
+1. Points layer sol panelde seçili mi?
+2. Harita zoom seviyesi (Ctrl+0 → Fit)
+3. Layer basit rengine ve stiline sahip mi?
+   → Right-click layer → Properties → Symbology
 ```
 
-### 4. SQL Hatası: "syntax error at or near..."
+### 4. Türkçe Karakterler Bozuk
 
-**Yaygın hatalar:**
+**DBeaver:**
+```
+Tools → Preferences → Database → Editors → SQL → Encoding: UTF-8
+```
 
-```sql
--- YANLIŞ: Noktalı virgül unutma
-SELECT * FROM points
-
--- DOĞRU:
-SELECT * FROM points;
-
--- YANLIŞ: Tek tırnak yerine çift tırnak
-SELECT * FROM points WHERE name = "Galata";
-
--- DOĞRU:
-SELECT * FROM points WHERE name = 'Galata Kulesi';
+**QGIS:**
+```
+Settings → Options → Data Sources → Encoding: UTF-8
 ```
 
 ---
 
 ## 📚 Ek Kaynaklar
 
-### PostGIS Fonksiyon Referansı (Temel)
+### DBeaver İpuçları
 
-| Fonksiyon | Açıklama | Örnek |
-|-----------|----------|-------|
-| `ST_AsText(geom)` | Geometriyi WKT formatına çevir | `POINT(29 41)` |
-| `ST_AsGeoJSON(geom)` | GeoJSON formatı | `{"type":"Point",...}` |
-| `ST_Distance(g1, g2)` | İki geometri arası mesafe | Metre cinsinden |
-| `ST_Area(geom)` | Poligon alanı | Metrekare |
-| `ST_Length(geom)` | Çizgi uzunluğu | Metre |
-| `ST_Contains(g1, g2)` | g1, g2'yi içeriyor mu? | true/false |
-| `ST_Intersects(g1, g2)` | Kesişiyorlar mı? | true/false |
-| `ST_Buffer(geom, d)` | Etrafında buffer oluştur | Yeni poligon |
+| Özellik | Kısayol | Açıklama |
+|---------|---------|----------|
+| SQL Editor Aç | Ctrl+L | Sorgu yazma |
+| Sorgu Çalıştır | Ctrl+Enter | Seçili sorguyu execute et |
+| Prettify SQL | Ctrl+Shift+P | SQL'i formatla |
+| Bağlantı Kur | Ctrl+Alt+D | Yeni DB bağlantısı |
+| Results Export | Sağ tık | CSV, JSON, SQL export |
 
-### WKT Format Örnekleri
+### QGIS İpuçları
+
+| Özellik | Kısayol | Açıklama |
+|---------|---------|----------|
+| Fit Harita | Ctrl+0 | Tüm layer'ları göster |
+| Zoom In | + | İçeri zoom |
+| Zoom Out | - | Dışarı zoom |
+| Pan | Sağ tık | Harita kaydırma |
+| Attribute Table | F6 | Seçili layer'ın tablısu |
+| Identify | Ctrl+I | Tıklanan feature info |
+| Refresh | F5 | Render'ı yenile |
+
+### PostGIS Fonksiyonları (DBeaver SQL Editor'da)
 
 ```sql
--- Nokta
-POINT(29.0041 41.0211)
+-- Koordinatları WKT formatında göster
+SELECT name, ST_AsText(geom) FROM points LIMIT 5;
 
--- Çizgi
-LINESTRING(29.0 41.0, 29.1 41.1, 29.2 41.2)
+-- Stadyumları listele
+SELECT name, type FROM points WHERE type = 'Stadyum';
 
--- Poligon (kapalı halka)
-POLYGON((28.9 41.0, 29.0 41.0, 29.0 41.1, 28.9 41.1, 28.9 41.0))
+-- Tüm noktaları ID'lerine göre sırala
+SELECT id, name, type FROM points ORDER BY id;
 
--- Çoklu nokta
-MULTIPOINT((29.0 41.0), (29.1 41.1), (29.2 41.2))
+-- Sadece tarihi mekanlar
+SELECT name, description FROM points WHERE type = 'Tarihi';
+
+-- Koordinatları derece olarak göster
+SELECT name, ST_X(geom) as lon, ST_Y(geom) as lat FROM points;
+
+-- Noktaları centroid'lerine göre gruplayıp sayeleme
+SELECT type, COUNT(*) as adet FROM points GROUP BY type ORDER BY adet DESC;
 ```
 
-### EPSG Kodları (Sık Kullanılanlar)
-
-| Kod | Sistem | Kullanım |
-|-----|--------|----------|
-| **4326** | WGS84 | GPS, coğrafi koordinatlar (derece) |
-| **3857** | Web Mercator | Google Maps, OpenLayers |
-| **32635** | UTM Zone 35N | Türkiye (derece yerine metre) |
-| **5253** | ED50 / UTM Zone 35N | Eski Türkiye haritaları |
-
-### psql Meta-Komutları
+### SQL Temel Komutlar (DBeaver'da)
 
 ```sql
-\dt            -- Tabloları listele
-\d points      -- Tablo yapısı
-\l             -- Veritabanlarını listele
-\du            -- Kullanıcıları listele
-\q             -- Çıkış
-\?             -- Yardım
-\h SELECT      -- SQL komut yardımı
+-- Tüm sütunları göster
+SELECT * FROM points;
+
+-- Belirli sütunları göster
+SELECT name, type FROM points;
+
+-- Satır sayısını sınırla
+SELECT * FROM points LIMIT 5;
+
+-- Filtreleme
+SELECT * FROM points WHERE type = 'Tarihi';
+
+-- Sıralama
+SELECT * FROM points ORDER BY name ASC;  -- Alfabetik
+SELECT * FROM points ORDER BY id DESC;   -- Tersine
+
+-- Sayma
+SELECT COUNT(*) as toplam FROM points;
+
+-- Tip'e göre sayma
+SELECT type, COUNT(*) FROM points GROUP BY type;
+
+-- İki tabloyu birleştir (JOIN)
+SELECT a.name, b.name, ST_Distance(a.geom::geography, b.geom::geography)/1000
+FROM points a, points b
+WHERE a.id < b.id
+ORDER BY ST_Distance(a.geom::geography, b.geom::geography) DESC LIMIT 5;
 ```
 
 ---
@@ -729,23 +709,23 @@ MULTIPOINT((29.0 41.0), (29.1 41.1), (29.2 41.2))
 
 **Ders 3'e Geçiş:**
 
-> "15 dakikalık PostGIS dersimiz bitti. Sonraki ders 30 dakika: GeoServer yapılandırması!
+> "PostGIS dersimiz bitti. Sonraki ders 30 dakika: GeoServer yapılandırması!
 >
 > Şimdi öğrendiğiniz bu nokta verilerini harita servisi olarak yayınlayacağız. Web tarayıcısından herkes görebilecek!"
 
 **Katılımcılara Not:**
 
-> "Container'ları açık bırakın! GeoServer'da bu verileri kullanacağız."
+> "DBeaver ve QGIS açık bırakabilirsiniz. GeoServer'da tekrar bu verileri kullanacağız."
 
 **Eğitmen Ders Arası Görevleri:**
 
 - [ ] Herkes mesafe sorgusunu başarıyla çalıştırdı mı?
 - [ ] PostGIS kavramları anlaşıldı mı? (hızlı soru-cevap)
 - [ ] Ders 3 için GeoServer tamamen başladı mı kontrol et
-- [ ] GeoServer login ekranını test et
+- [ ] GeoServer login ekranını test et (port 8088)
 
 ---
 
-**📝 Eğitmen Notu:** SQL bilmeyen katılımcılar için çok detaylı anlatım yapıldı. Hızlı ilerleyen gruplarda "İleri Seviye Not" bölümlerini ekleyebilirsiniz.
+**📝 Eğitmen Notu:** DBeaver ve QGIS, SQL yazma stresini kaldırıyor. Katılımcılar GIS ve coğrafi veri kavramlarına daha rahat odaklanabiliyor.
 
 **🎉 Başarılar!**
