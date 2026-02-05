@@ -142,11 +142,25 @@ web-gis-vibe-workshop/
 │   └── sidebar.js                  # Sidebar yönetimi (opsiyonel)
 │
 └── 📂 docs/                        # Dokümantasyon
+    ├── kurulum-oncesi.md           # Kurulum kılavuzu (workshop öncesi)
     ├── geoserver-setup.md          # GeoServer kurulum rehberi
     ├── troubleshooting.md          # Sorun giderme
     ├── workshop-flow.md            # Workshop akış planı
     └── advanced-tasks.md           # İleri seviye özellikler
+
+└── 📂 lessons/                     # Ders notları (eğitmenler için)
+    ├── README.md                   # Ders programı
+    ├── ders1-docker-kurulum.md     # 15 dk - Docker
+    ├── ders2-postgis-mekansal-veri.md  # 15 dk - PostGIS
+    ├── ders3a-geoserver-baglanti.md    # 20 dk - GeoServer Bağlantı
+    ├── ders3b-geoserver-katman.md      # 20 dk - GeoServer Katman
+    ├── ders3c-bonus-sld-stiller.md     # 15 dk - SLD (opsiyonel)
+    ├── ders4-openlayers-web-uygulamasi.md  # 30 dk - OpenLayers
+    ├── ders5-cizim-olcum-araclari.md   # 30 dk - Çizim/Ölçüm
+    └── ders6-serbest-gelistirme.md     # 45 dk - Serbest Geliştirme
 ```
+
+**📖 Workshop Süresi:** 3.5 saat (210 dakika + 20 dk molalar)
 
 ---
 

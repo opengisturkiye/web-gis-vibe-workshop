@@ -8,19 +8,45 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
 
 | Zaman | Konu | Süre |
 |-------|------|------|
-| 09:00-09:15 | Kurulum ve Kontroller | 15 dk |
-| 09:15-09:30 | PostGIS Giriş | 15 dk |
-| 09:30-10:00 | GeoServer Yapılandırma | 30 dk |
-| 10:00-10:30 | OpenLayers Harita | 30 dk |
-| 10:30-10:45 | ☕ Mola | 15 dk |
-| 10:45-11:15 | Çizim ve Ölçüm | 30 dk |
-| 11:15-12:00 | Serbest Geliştirme | 45 dk |
+| **ÖN ÇALIŞMA** | *Kurulum Kılavuzu (docs/kurulum-oncesi.md)* | *30 dk (workshop öncesi)* |
+| 09:00-09:15 | Docker Container Yönetimi | 15 dk |
+| 09:15-09:30 | PostGIS Mekansal Veri | 15 dk |
+| 09:30-09:50 | GeoServer Bağlantı Yapılandırması | 20 dk |
+| 09:50-10:10 | GeoServer Katman Yayını | 20 dk |
+| 10:10-10:20 | ☕ Mola | 10 dk |
+| 10:20-10:50 | OpenLayers Web Uygulaması | 30 dk |
+| 10:50-11:20 | Çizim ve Ölçüm Araçları | 30 dk |
+| 11:20-11:30 | ☕ Mola | 10 dk |
+| 11:30-12:15 | Serbest Geliştirme ve GitHub Push | 45 dk |
+| 12:15-12:30 | Kapanış & Soru-Cevap | 15 dk |
 
-**Toplam Süre:** 3 saat
+**Toplam Workshop Süresi:** 3 saat 30 dakika (+ 20 dk molalar = **3.5 saat**)
+
+**Opsiyonel İleri Seviye:**
+- Ders 3c: SLD Kategorik Stiller (15 dk) - Ders 3b sonrası veya Ders 6 içinde yapılabilir
 
 ---
 
-## 🕘 09:00-09:15 | Kurulum ve Kontroller (15 dk)
+## 📧 ÖN ÇALIŞMA | Workshop Öncesi (1 gün önce)
+
+### Hedefler
+- [ ] Tüm katılımcılar WSL2 ve Docker Desktop kurdular
+- [ ] Workshop projesi bilgisayarlarda hazır
+- [ ] Kurulum sorunları önceden çözüldü
+
+### Eğitmen Görevleri
+
+**Workshop'tan 1 hafta önce:**
+- 📧 Katılımcılara `docs/kurulum-oncesi.md` dosyasını gönderin
+- 📱 Kurulum desteği için iletişim kanalı kurun (Slack/Discord/Email)
+
+**Workshop'tan 1 gün önce:**
+- 📞 Kurulum kontrolü maili atın
+- 📋 Sorun yaşayan katılımcılarla iletişime geçin
+
+---
+
+## 🕘 09:00-09:15 | Docker Container Yönetimi (15 dk)
 
 ### Hedefler
 - [ ] Docker Desktop çalışıyor
@@ -60,7 +86,7 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
 
 ---
 
-## 🕘 09:15-09:30 | PostGIS Giriş (15 dk)
+## 🕘 09:15-09:30 | PostGIS Mekansal Veri (15 dk)
 
 ### Hedefler
 - [ ] PostGIS extension'ı anlamak
@@ -109,19 +135,17 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
 
 ---
 
-## 🕘 09:30-10:00 | GeoServer Yapılandırma (30 dk)
+## 🕘 09:30-09:50 | GeoServer Bağlantı Yapılandırması (20 dk)
 
 ### Hedefler
 - [ ] GeoServer'a giriş yapmak
 - [ ] Workspace oluşturmak
-- [ ] PostGIS Store eklemek
-- [ ] Layer yayınlamak
-- [ ] Layer Preview ile test etmek
+- [ ] PostGIS Store eklemek (Docker network ile host=postgis)
 
 ### Adımlar
 
 1. **GeoServer'a Giriş** (3 dk)
-   - http://localhost:8080/geoserver
+   - http://localhost:8088/geoserver
    - admin / geoserver
 
 2. **Workspace Oluştur** (5 dk)
@@ -136,36 +160,76 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
    - PostGIS seçin
    - Workspace: workshop
    - Data Source Name: postgis_db
-   - host: `postgis` ⚠️
+   - **host: `postgis`** ⚠️⚠️⚠️ (EN KRİTİK!)
    - port: 5432
    - database: gis
    - user: gis
    - passwd: gis
    - Save
 
-4. **Layer Yayınla** (7 dk)
+4. **Bağlantı Testi** (2 dk)
+   - "Save" sonrası hata yoksa başarılı
+   - Layer listesi otomatik gösterilir
+
+### Katılımcı Kontrol Noktası
+
+> 💬 **Soru:** Store kaydedildi ve "New Layer" sayfası açıldı mı?
+
+> ⚠️ **Yaygın Hata:** host=localhost yazıldıysa bağlantı başarısız olur!
+
+**→ Sonraki adım: Ders 3b - GeoServer Katman Yayını**
+
+---
+
+## 🕘 09:50-10:10 | GeoServer Katman Yayını (20 dk)
+
+### Hedefler
+- [ ] Layer yayınlamak
+- [ ] CRS yapılandırması
+- [ ] Bounding box hesaplama
+- [ ] Layer Preview ile test etmek
+
+### Adımlar
+
+1. **Layer Yayınla** (7 dk)
+   - Store kaydedildikten sonra otomatik açılan "New Layer" sayfasında
    - points tablosunda "Publish" tıklayın
    - Native/Declared SRS: EPSG:4326
    - Compute from data tıklayın
    - Compute from native bounds tıklayın
-   - Save
-
-5. **Layer Preview** (5 dk)
+2. **Layer Preview ile Test** (8 dk)
    - Data → Layer Preview
    - workshop:points → OpenLayers
-   - Haritada noktaları görün
+   - ✅ Haritada 17 nokta görünmeli
 
-### Yaygın Hatalar
+3. **GetFeatureInfo Test** (3 dk)
+   - Haritada bir noktaya tıklayın
+   - Popup'ta nokta bilgileri gösterilir
 
-⚠️ **host = localhost değil, host = postgis!**
+4. **WMS URL Yapısı Açıklama** (2 dk)
+   - Layer Preview'da URL'yi inceleyin
+   - `/ows?service=WMS&version=1.3.0` yapısını gösterin
 
 ### Katılımcı Kontrol Noktası
 
-> 💬 **Soru:** Layer Preview'de 17 kırmızı nokta görüyor musunuz?
+> 💬 **Soru:** Haritada İstanbul noktalarını görebiliyor musunuz?
+
+> ℹ️ **Opsiyonel:** İleri seviye katılımcılar için Ders 3c (SLD Stiller) önerilebilir
+
+**→ 10 dakika mola zamanı!**
 
 ---
 
-## 🕘 10:00-10:30 | OpenLayers Harita (30 dk)
+## 🕘 10:10-10:20 | ☕ Mola (10 dk)
+
+**Eğitmen Notları:**
+- Sorun yaşayan katılımcılara yardım edin
+- GeoServer store ve layer yapılandırmasını kontrol edin
+- Ders 4 için terminal ve VS Code hazırlığı yapın
+
+---
+
+## 🕘 10:20-10:50 | OpenLayers Web Uygulaması (30 dk)
 
 ### Hedefler
 - [ ] Web uygulamasını anlamak
@@ -177,7 +241,7 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
 
 1. **Web Uygulamasını Aç** (2 dk)
    - http://localhost:8081
-   - Ankara merkez görünmeli
+   - İstanbul merkez görünmeli
 
 2. **index.html İncele** (5 dk)
    - Sidebar yapısı
@@ -186,7 +250,7 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
 
 3. **style.css İncele** (5 dk)
    - CSS değişkenleri
-   - Dark tema
+   - Light tema (minimal tasarım)
    - Responsive tasarım
 
 4. **app.js İncele** (10 dk)
@@ -196,8 +260,20 @@ Bu rehber, workshop'un dakika dakika nasıl ilerleyeceğini açıklar.
    - Event handlers
 
 5. **WMS Katmanını Test Et** (5 dk)
-   - Sidebar'da "WMS Katmanı" checkbox'ı
+   - Sidebar'da "Noktalar (WMS)" checkbox'ı
    - Açıp kapatarak katman görünürlüğünü test edin
+
+6. **GetFeatureInfo Popup Test** (3 dk)
+   - Haritada bir noktaya tıklayın
+   - Popup'ta nokta bilgilerini görün
+
+### Katılımcı Kontrol Noktası
+
+> 💬 **Soru:** Web uygulamasında İstanbul'u görüyor ve noktalara tıklayabiliyor musunuz?
+
+---
+
+## 🕘 10:50-11:20 | Çizim ve Ölçüm Araçları (30 dk)
 
 6. **Feature Info Test** (3 dk)
    - Haritada bir noktaya tıklayın
@@ -224,13 +300,10 @@ const wmsLayer = new ol.layer.Tile({
 
 ---
 
-## ☕ 10:30-10:45 | Mola (15 dk)
-
----
-
-## 🕘 10:45-11:15 | Çizim ve Ölçüm (30 dk)
+## 🕘 10:50-11:20 | Çizim ve Ölçüm Araçları (30 dk)
 
 ### Hedefler
+- [ ] Vector layer oluşturmak
 - [ ] Polygon çizimi yapmak
 - [ ] Mesafe ölçümü yapmak
 - [ ] Alan hesaplamalarını görmek
@@ -238,21 +311,25 @@ const wmsLayer = new ol.layer.Tile({
 ### Adımlar
 
 1. **Polygon Çizimi** (10 dk)
-   - "📐 Çizim (Polygon)" butonuna tıklayın
+   - "▭ Polygon" butonuna tıklayın
    - Haritada birkaç nokta işaretleyin
    - Çift tıklayarak tamamlayın
-   - Console'da alan değerini görün
+   - Console'da alan değerini görün (km²)
 
 2. **Mesafe Ölçümü** (10 dk)
-   - "📏 Ölçüm (Line)" butonuna tıklayın
+   - "― Line" butonuna tıklayın
    - İki nokta arasını çizin
-   - Alert'te mesafe değerini görün
+   - Console'da mesafe değerini görün (km)
 
-3. **Temizleme** (3 dk)
-   - "🗑️ Temizle" butonuna tıklayın
+3. **Nokta Çizimi** (3 dk)
+   - "● Point" butonuna tıklayın
+   - Haritada bir nokta işaretleyin
+
+4. **Temizleme** (2 dk)
+   - "× Temizle" butonuna tıklayın
    - Tüm çizimlerin silindiğini görün
 
-4. **Kodu İncele** (7 dk)
+5. **Kodu İncele** (5 dk)
    ```javascript
    // Alan hesaplama
    const area = ol.sphere.getArea(geometry);
@@ -269,24 +346,43 @@ const wmsLayer = new ol.layer.Tile({
 
 ---
 
-## 🕘 11:15-12:00 | Serbest Geliştirme (45 dk)
+## 🕘 11:20-11:30 | ☕ Mola (10 dk)
+
+**Eğitmen Notları:**
+- Sorun yaşayan katılımcılara yardım edin
+- Ders 6 için görev listesini hazırlayın
+- GitHub hesapları kontrol edin (varsa)
+
+---
+
+## 🕘 11:30-12:15 | Serbest Geliştirme ve GitHub Push (45 dk)
+
+### Hedefler
+- [ ] Kendi fikirlerini geliştirmek
+- [ ] Pratik yaparak pekiştirmek
+- [ ] Kodları GitHub'a yüklemek
 
 ### Önerilen Geliştirmeler
 
-#### Seviye 1: Kolay
+#### 🟢 Seviye 1: Kolay (15-20 dk)
 - [ ] Yeni stil renkleri deneyin
-- [ ] Başka bir harita altlığı ekleyin (Bing, Stamen)
+- [ ] Başka bir harita altlığı ekleyin (Stamen, CartoDB)
 - [ ] Popup'a daha fazla bilgi ekleyin
+- [ ] Harita merkezini değiştirin
+- [ ] Zoom/Pan kontrolleri ekleyin
 
-#### Seviye 2: Orta
-- [ ] Nokta ekleme özelliği (Point drawing)
+#### 🟡 Seviye 2: Orta (25-30 dk)
 - [ ] Çizimleri LocalStorage'a kaydedin
-- [ ] Heatmap katmanı ekleyin
+- [ ] Layer switch (radio button) ekleyin
+- [ ] Koordinat gösterme (mouse move)
+- [ ] Ölçüm sonuçlarını haritada göster (Overlay)
 
-#### Seviye 3: İleri
+#### 🔴 Seviye 3: İleri (40+ dk)
 - [ ] WFS-T ile veri kaydetme
-- [ ] Clustering özelliği
-- [ ] Custom SLD stil oluşturma
+- [ ] Clustering (kümeleme) özelliği
+- [ ] Heatmap (ısı haritası)
+- [ ] Custom SLD stil oluşturma (GeoServer)
+- [ ] Backend API (Node.js/Python)
 
 ### Kod Örnekleri
 
@@ -308,7 +404,34 @@ const geojson = new ol.format.GeoJSON().writeFeatures(
 localStorage.setItem('drawings', geojson);
 ```
 
+### GitHub'a Yükleme (Son 10 dakika)
+
+**Katılımcılara söyleyin:**
+
+1. **Git yapılandırması:**
+   ```bash
+   git config --global user.name "Adınız Soyadınız"
+   git config --global user.email "email@example.com"
+   ```
+
+2. **Değişiklikleri commit edin:**
+   ```bash
+   git add -A
+   git commit -m "Workshop sonucu: Özelleştirmeler ve iyileştirmeler"
+   ```
+
+3. **GitHub'a push edin:**
+   - GitHub hesabı gerekli (yoksa hızlıca oluşturabilirler)
+   - SSH key veya HTTPS ile push
+   ```bash
+   git push origin main
+   ```
+
+**Detaylı talimatlar için:** Ders 6 içindeki "BONUS: Kodunuzu GitHub'a Yükleyelim" bölümüne bakın
+
 ---
+
+## 🕘 12:15-12:30 | Kapanış & Soru-Cevap (15 dk)
 
 ## 📝 Workshop Sonrası
 
