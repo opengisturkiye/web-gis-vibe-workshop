@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # PostgreSQL + PostGIS Database
   postgis:
-    image: postgis/postgis:15-3.3
+    image: postgis/postgis:latest
     container_name: postgis
     environment:
       POSTGRES_USER: gis

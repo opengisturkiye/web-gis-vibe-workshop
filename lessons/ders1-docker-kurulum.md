@@ -718,7 +718,7 @@ docker ps
 
 ```
 CONTAINER ID   IMAGE                     STATUS         PORTS
-xxxxxxxxxxxxx  postgis/postgis:15-3.3    Up 2 minutes   0.0.0.0:5454->5432/tcp
+xxxxxxxxxxxxx  postgis/postgis:latest    Up 2 minutes   0.0.0.0:5454->5432/tcp
 xxxxxxxxxxxxx  kartoza/geoserver:latest  Up 2 minutes   0.0.0.0:8088->8080/tcp
 xxxxxxxxxxxxx  nginx:alpine              Up 2 minutes   0.0.0.0:8081->80/tcp
 ```
@@ -730,7 +730,7 @@ xxxxxxxxxxxxx  nginx:alpine              Up 2 minutes   0.0.0.0:8081->80/tcp
 
 **2. IMAGE:**
 > "Hangi image'dan oluşturuldu. 
-> - `postgis/postgis:15-3.3` → PostgreSQL 15, PostGIS 3.3
+> - `postgis/postgis:latest` → PostgreSQL + PostGIS (güncel stabil versiyon, otomatik güncellenir)
 > - `kartoza/geoserver:latest` → GeoServer (güncel stabil versiyon, otomatik güncellenir)
 > - `nginx:alpine` → Hafif Nginx image'ı"
 
