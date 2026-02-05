@@ -717,10 +717,10 @@ docker ps
 **📊 Beklenen Çıktı (formatlanmış halde göster):**
 
 ```
-CONTAINER ID   IMAGE                     STATUS         PORTS
-xxxxxxxxxxxxx  postgis/postgis:15-3.3    Up 2 minutes   0.0.0.0:5432->5432/tcp
-xxxxxxxxxxxxx  kartoza/geoserver:2.24.1  Up 2 minutes   0.0.0.0:8080->8080/tcp
-xxxxxxxxxxxxx  nginx:alpine              Up 2 minutes   0.0.0.0:8081->80/tcp
+CONTAINER ID   IMAGE                            STATUS         PORTS
+xxxxxxxxxxxxx  postgis/postgis:15-3.3           Up 2 minutes   0.0.0.0:5454->5432/tcp
+xxxxxxxxxxxxx  kartoza/geoserver:latest-ubuntu  Up 2 minutes   0.0.0.0:8088->8080/tcp
+xxxxxxxxxxxxx  nginx:alpine                     Up 2 minutes   0.0.0.0:8081->80/tcp
 ```
 
 **🎤 Eğitmen sütunları açıklar:**
@@ -731,7 +731,7 @@ xxxxxxxxxxxxx  nginx:alpine              Up 2 minutes   0.0.0.0:8081->80/tcp
 **2. IMAGE:**
 > "Hangi image'dan oluşturuldu. 
 > - `postgis/postgis:15-3.3` → PostgreSQL 15, PostGIS 3.3
-> - `kartoza/geoserver:2.24.1` → GeoServer 2.24.1
+> - `kartoza/geoserver:latest-ubuntu` → GeoServer (güncel stabil versiyon)
 > - `nginx:alpine` → Hafif Nginx image'ı"
 
 **3. STATUS:**

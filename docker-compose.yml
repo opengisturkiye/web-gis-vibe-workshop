@@ -24,7 +24,7 @@ services:
 
   # GeoServer
   geoserver:
-    image: kartoza/geoserver:2.24.1
+    image: kartoza/geoserver:latest-ubuntu
     container_name: geoserver
     environment:
       GEOSERVER_ADMIN_USER: admin
@@ -33,6 +33,7 @@ services:
       CORS_ALLOWED_ORIGINS: "*"
       CORS_ALLOWED_METHODS: "GET,POST,PUT,DELETE,HEAD,OPTIONS"
       CORS_ALLOWED_HEADERS: "*"
+      GEOSERVER_JAVA_OPTS: "-Xmx1g -Xms512m"
     ports:
       - "8088:8080"  # Harici port 8088 (çakışma önü için, default 8080)
     volumes:
