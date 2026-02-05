@@ -550,6 +550,220 @@ map.addLayer(clusterLayer);
 
 ---
 
+## � BONUS: Kodunuzu GitHub'a Yükleyelim
+
+> **Eğitmen Ders Notu** - Versiyon Kontrol ve Kod Paylaşımı
+
+Yaptığınız değişiklikleri GitHub'a yüklemek, kodunuzu başkalarıyla paylaşmak ve sürüm geçmişini saklamak için önemlidir.
+
+### Adım 1: GitHub Hesabı Oluşturun (Henüz Yoksa)
+
+**Web Tarayıcıda:**
+
+1. **https://github.com** adresine gidin
+2. **"Sign up"** düğmesine tıklayın
+3. Email adresinizi yazın
+4. **Create account** diyerek devam edin
+5. Kimlik doğrulaması (verification) yapın
+6. Kullanıcı adı ve parola belirleyin
+
+**📝 Örnek:**
+```
+Email: ornek@example.com
+Username: atolye-gis-2026
+Password: Güçlü bir şifre (minimum 15 karakter önerilen)
+```
+
+### Adım 2: Git Kurulumu (Windows)
+
+**Eğer bilgisayarınızda Git yüklü değilse:**
+
+**PowerShell'i yönetici olarak açın:**
+
+```powershell
+# Chocolatey ile kurulum (hızlı)
+choco install git -y
+
+# Veya direkt indir
+# https://git-scm.com/download/win
+```
+
+**Git kurulduğunu kontrol edin:**
+
+```bash
+git --version
+# Beklenen çıktı: git version 2.x.x
+```
+
+### Adım 3: Git Yapılandırması
+
+**Terminalde çalıştırın:**
+
+```bash
+# Kendinizi tanıtın (GitHub kullanıcı adınızla)
+git config --global user.name "Adınız Soyadınız"
+git config --global user.email "email@example.com"
+
+# SSH anahtarı oluşturun (GitHub ile güvenli bağlantı için)
+ssh-keygen -t ed25519 -C "email@example.com"
+
+# Sorularda Enter tuşuna basın (parolasız anahtar)
+# Çıktı: Your public key has been saved in /home/user/.ssh/id_ed25519.pub
+```
+
+### Adım 4: SSH Anahtarını GitHub'a Ekleyin
+
+**GitHub'da yönetim panelinde:**
+
+1. **Sağ üst köşedeki profil resmine tıklayın → Settings**
+2. Sol menüden **SSH and GPG keys** seçin
+3. **New SSH key** düğmesine tıklayın
+
+**SSH anahtarınızı kopyalayın:**
+
+```bash
+# Windows (PowerShell)
+Get-Content ~/.ssh/id_ed25519.pub | Set-Clipboard
+
+# Veya notepad ile açın
+notepad ~/.ssh/id_ed25519.pub
+```
+
+**GitHub'da:**
+- **Title:** Workshop-Bilgisayarı (veya bilgisayar adı)
+- **Key:** Kopyaladığınız SSH anahtarını yapıştırın
+- **Add SSH key** tıklayın
+
+### Adım 5: Projenizi GitHub'a Yükleyin
+
+**Terminal'de proje klasöründe:**
+
+```bash
+# 1. Yerel Git deposu başlat (ilk defa yapıyorsanız)
+cd /path/to/webcbs-atolye
+git init
+
+# 2. Tüm dosyaları staging alanına ekle
+git add -A
+
+# 3. İlk commit oluştur
+git commit -m "Initial commit: Web GIS Workshop uygulaması"
+
+# 4. GitHub'da YENI repository oluştur
+# https://github.com/new
+# Repository adı: webcbs-workshop
+# Description: Web GIS Workshop - PostgreSQL, GeoServer, OpenLayers
+# Public veya Private seçin
+```
+
+**GitHub'da repository oluşturduktan sonra:**
+
+```bash
+# 5. GitHub deposuna bağlantı kur
+git remote add origin git@github.com:KULLANICI_ADINIZ/webcbs-workshop.git
+
+# 6. Main branch'ı ayarla ve push et
+git branch -M main
+git push -u origin main
+
+# Beklenen çıktı:
+# Enumerating objects: 45, done.
+# Counting objects: 100% (45/45), done.
+# Writing objects: 100% (45/45), 2.50 KiB | 830.00 KiB/s, done.
+# ...
+# To github.com:kullanici/webcbs-workshop.git
+#  * [new branch]      main -> main
+# Branch 'main' set to track remote branch 'main' from 'origin'.
+```
+
+### Adım 6: Sonraki Değişiklikleri Push Edin
+
+**Her değişiklik yapıldığında:**
+
+```bash
+# 1. Değişiklikleri kontrol et
+git status
+
+# Çıktı:
+# On branch main
+# Changes not staged for commit:
+#   modified:   web/app.js
+#   modified:   web/style.css
+
+# 2. Değişiklikleri ekle
+git add -A
+
+# 3. Commit mesajı ile kaydet
+git commit -m "Stil güncellemesi: Light theme ve minimal tasarım"
+
+# 4. GitHub'a yükle
+git push
+
+# Beklenen çıktı:
+# Enumerating objects: 3, done.
+# Writing objects: 100% (3/3), 271 bytes | 271.00 KiB/s, done.
+# ...
+# 3a1b2c4 -> e4f5g6h  main -> main
+```
+
+### Yararlı Git Komutları
+
+```bash
+# Commit geçmişini görmek
+git log --oneline
+
+# Son kaç commit'i görmek
+git log -5 --oneline
+
+# Branch'ları görmek
+git branch -a
+
+# GitHub durumunu kontrol
+git status
+
+# Değişiklikleri karşılaştırmak
+git diff
+
+# Önceki commit'e geri dönmek
+git revert <commit-id>
+```
+
+### Hata Çözümleri
+
+**❌ Problem: "Permission denied (publickey)"**
+
+```bash
+# SSH bağlantısı test et
+ssh -T git@github.com
+
+# Çıktı olmalı:
+# Hi USERNAME! You've successfully authenticated...
+```
+
+**❌ Problem: Yanlış branch'tan push ettim**
+
+```bash
+# Geri dön
+git reset --soft HEAD~1
+
+# Doğru branch'a git
+git checkout main
+git push
+```
+
+**❌ Problem: SSH anahtarı çalışmıyor**
+
+```bash
+# SSH aracısını başlat
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+
+# Tekrar dene
+git push
+```
+
+---
+
 ## 📝 Feedback Toplama (Opsiyonel)
 
 **Eğitmen kısa anket yapabilir:**
@@ -565,6 +779,6 @@ map.addLayer(clusterLayer);
 
 **🎓 Workshop Tamamlandı!**
 
-**Eğitmen Notu:** 3 saatlik yoğun program tamamlandı. Katılımcıları tebrik edin, başarılarını kutlayın. Ders materyallerini GitHub'da güncel tutun!
+**Eğitmen Notu:** 3 saatlik yoğun program tamamlandı. Katılımcıları tebrik edin, başarılarını kutlayın. Kodlarını GitHub'a yüklemeleri için teşvik edin! Ders materyallerini GitHub'da güncel tutun!
 
 **🎉 Başarılar!**
