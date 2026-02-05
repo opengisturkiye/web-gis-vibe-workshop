@@ -1226,19 +1226,19 @@ Format: SLD
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor version="1.0.0"
-  xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
   xmlns="http://www.opengis.net/sld"
   xmlns:ogc="http://www.opengis.net/ogc"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/sld
+  http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd">
+  
   <NamedLayer>
     <Name>workshop:points</Name>
     <UserStyle>
       <Title>Noktalar - Türe Göre Renkli</Title>
       <FeatureTypeStyle>
-
-        <!-- KURAL 1: Tarihi Yerler - KIRMIZI -->
+        
+        <!-- KURAL 1: Tarihi Yerler - KIRMIZI DAIRE -->
         <Rule>
           <Name>Tarihi</Name>
           <ogc:Filter>
@@ -1251,9 +1251,7 @@ Format: SLD
             <Graphic>
               <Mark>
                 <WellKnownName>circle</WellKnownName>
-                <Fill>
-                  <CssParameter name="fill">#FF0000</CssParameter>
-                </Fill>
+                <Fill><CssParameter name="fill">#FF0000</CssParameter></Fill>
                 <Stroke>
                   <CssParameter name="stroke">#CC0000</CssParameter>
                   <CssParameter name="stroke-width">2</CssParameter>
@@ -1263,8 +1261,8 @@ Format: SLD
             </Graphic>
           </PointSymbolizer>
         </Rule>
-
-        <!-- KURAL 2: Stadyumlar - MAVİ -->
+        
+        <!-- KURAL 2: Stadyumlar - MAVİ KARE -->
         <Rule>
           <Name>Stadyum</Name>
           <ogc:Filter>
@@ -1277,9 +1275,7 @@ Format: SLD
             <Graphic>
               <Mark>
                 <WellKnownName>square</WellKnownName>
-                <Fill>
-                  <CssParameter name="fill">#0000FF</CssParameter>
-                </Fill>
+                <Fill><CssParameter name="fill">#0000FF</CssParameter></Fill>
                 <Stroke>
                   <CssParameter name="stroke">#0000CC</CssParameter>
                   <CssParameter name="stroke-width">2</CssParameter>
@@ -1289,8 +1285,8 @@ Format: SLD
             </Graphic>
           </PointSymbolizer>
         </Rule>
-
-        <!-- KURAL 3: Üniversiteler - YEŞİL -->
+        
+        <!-- KURAL 3: Üniversiteler - YEŞİL ÜÇGEN -->
         <Rule>
           <Name>Üniversite</Name>
           <ogc:Filter>
@@ -1303,9 +1299,7 @@ Format: SLD
             <Graphic>
               <Mark>
                 <WellKnownName>triangle</WellKnownName>
-                <Fill>
-                  <CssParameter name="fill">#00AA00</CssParameter>
-                </Fill>
+                <Fill><CssParameter name="fill">#00AA00</CssParameter></Fill>
                 <Stroke>
                   <CssParameter name="stroke">#008800</CssParameter>
                   <CssParameter name="stroke-width">2</CssParameter>
@@ -1315,17 +1309,15 @@ Format: SLD
             </Graphic>
           </PointSymbolizer>
         </Rule>
-
-        <!-- KURAL 4: Varsayılan - GRİ (AVM, İskele, Semt vb) -->
+        
+        <!-- KURAL 4: Varsayılan - GRİ DAIRE (EN SONDA!) -->
         <Rule>
           <Name>Diğer</Name>
           <PointSymbolizer>
             <Graphic>
               <Mark>
                 <WellKnownName>circle</WellKnownName>
-                <Fill>
-                  <CssParameter name="fill">#888888</CssParameter>
-                </Fill>
+                <Fill><CssParameter name="fill">#888888</CssParameter></Fill>
                 <Stroke>
                   <CssParameter name="stroke">#555555</CssParameter>
                   <CssParameter name="stroke-width">2</CssParameter>
@@ -1335,11 +1327,10 @@ Format: SLD
             </Graphic>
           </PointSymbolizer>
         </Rule>
-
+        
       </FeatureTypeStyle>
     </UserStyle>
   </NamedLayer>
-
 </StyledLayerDescriptor>
 ```
 
@@ -1489,6 +1480,196 @@ Data → Layer Preview
 > - **Veri anlama kolaylaşır** → Renkler anlamı temsil eder
 > - **Harita okunabilirliği artar** → Farklı türleri hızlı görebilirsiniz
 > - **Production ortamına uygun** → Gerçek uygulamalarda böyle kullanılır"
+
+---
+
+**⚠️ Troubleshooting: Tüm Noktalar Hala Gri Gözüküyorsa**
+
+**Sorun 1: GeoServer Cache Problemi**
+
+**Çözüm:**
+
+```bash
+# Terminal'de GeoServer log'unu kontrol et
+docker compose logs -f geoserver | grep -i style
+
+# Veya: GeoServer Admin'de Layer'ı refresh et
+```
+
+**Tarayıcıda:**
+- `Ctrl+Shift+Delete` → Cache temizle (tüm history)
+- Veya incognito/private mode'da test et
+
+**Sorun 2: Layer'a Style Doğru Uygulanmadı**
+
+**Kontrol adımları:**
+
+**Sol menüden:**
+```
+Data → Layers → workshop:points
+```
+
+**Tıkla → [Publishing] sekmesi**
+
+**Doğrula:**
+```
+Default Style: workshop_points_kategorik  ← TAM OLARAK BU MI?
+```
+
+**Eğer başka style yazıyorsa:**
+- Dropdown açıp `workshop_points_kategorik` seç
+- [Save]
+
+**Sorun 3: SLD Filter Syntax Sorunu**
+
+**Test Et:**
+
+**Sol menüden:**
+```
+Data → Styles → workshop_points_kategorik
+```
+
+**[Preview] butonuna tıkla!**
+
+**Screenshot açılır - renkleri görebilirsin**
+
+**Eğer SLD'de syntax hatası varsa:**
+```
+❌ Validation Error ...
+```
+
+**Çözüm: SLD'yi yeniden yaz (basitleştirilmiş versiyon):**
+
+**[Edit Style] → Tüm kodu sil → Şu kodu yapıştır:**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0"
+  xmlns="http://www.opengis.net/sld"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/sld
+  http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd">
+
+  <NamedLayer>
+    <Name>workshop:points</Name>
+    <UserStyle>
+      <FeatureTypeStyle>
+
+        <!-- Tarihi Yerler - Kırmızı -->
+        <Rule>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Tarihi</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#FF0000</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- Stadyumlar - Mavi -->
+        <Rule>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Stadyum</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>square</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#0000FF</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- Üniversiteler - Yeşil -->
+        <Rule>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Üniversite</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>triangle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#00AA00</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- Varsayılan - Gri -->
+        <Rule>
+          <ElseFilter/>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#888888</CssParameter>
+                </Fill>
+              </Mark>
+              <Size>8</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+
+```
+
+**[Validate] → [Save]**
+
+**Layer Cache Temizle:**
+
+**Sol menüden:**
+```
+Tile Caching → Tile Layers → workshop:points
+```
+
+**Eğer varsa:**
+```
+[Truncate Layer]  ← Tıkla (cache temizle)
+```
+
+**Sonra Layer Preview'i refresh et (F5)**
+
+**🎤 Eğitmen der:**
+
+> "Stil sorunlarında şu adımlar yardımcı olur:
+> 1. Browser cache'ini temizle (Ctrl+Shift+Delete)
+> 2. Layer'ın Default Style'ının doğru olduğunu kontrol et
+> 3. SLD Preview butonuyla test et
+> 4. GeoServer tile cache'ini truncate et
+> 5. Tarayıcı F5 ile refresh et
+>
+> Genellikle problem cache ile çözülür!"
+
+---
 
 **⚠️ Bonus: Başka Şekiller**
 
