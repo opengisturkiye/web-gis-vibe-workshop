@@ -8,10 +8,11 @@
 
 | Özellik | Detay |
 |---------|-------|
-| **Süre** | 15 dakika |
+| **Süre** | 15 dakika (Kurulum hariç) |
 | **Zorluk** | Başlangıç |
-| **Ön Gereksinim** | Docker Desktop yüklü |
+| **Ön Gereksinim** | WSL2 + Docker Desktop yüklü |
 | **Hedef Kitle** | Tüm seviyeler |
+| **Kurulum Süresi** | +30 dakika (ders öncesi yapılmalı) |
 
 ---
 
@@ -30,7 +31,237 @@ Bu dersin sonunda katılımcılar şunları yapabilecek:
 
 ## 📚 Eğitmen Ön Hazırlık
 
+### ADIM 0: Windows WSL2 ve Docker Desktop Kurulumu (Ders Öncesi - 30 dakika)
+
+> **Not:** Bu adımlar workshop'tan ÖNCE katılımcılara mail ile gönderilmeli veya ders başında yüklü olmayanlar için ayrılmalıdır.
+
+#### WSL2 Kurulumu (Windows 10/11 için)
+
+**🎤 Eğitmen der:**
+
+> "Docker Desktop Windows'ta WSL2 (Windows Subsystem for Linux 2) üzerinde çalışır. Önce WSL2'yi kuracağız."
+
+**Adım 1: WSL2 Kurulumu (Tek komutla - Windows 11 veya güncel Windows 10)**
+
+```powershell
+# PowerShell'i YÖNETİCİ olarak aç (sağ tık → Run as Administrator)
+
+# WSL2'yi kur
+wsl --install
+
+# Bilgisayarı yeniden başlat
+Restart-Computer
+```
+
+**📊 Beklenen Çıktı:**
+
+```
+Installing: Virtual Machine Platform
+Installing: Windows Subsystem for Linux
+Installing: Ubuntu
+The requested operation is successful. Changes will not be effective until the system is rebooted.
+```
+
+**Adım 2: WSL2 Sürümünü Kontrol Et (Yeniden başlatma sonrası)**
+
+```powershell
+# WSL2 yüklü mü kontrol et
+wsl --status
+
+# Beklenen çıktı:
+# Default Distribution: Ubuntu
+# Default Version: 2
+```
+
+**⚠️ Eski Windows Sürümleri İçin Manuel Kurulum:**
+
+```powershell
+# 1. WSL ve Virtual Machine Platform özelliklerini etkinleştir
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+# 2. Bilgisayarı yeniden başlat
+Restart-Computer
+
+# 3. WSL2'yi varsayılan yap
+wsl --set-default-version 2
+
+# 4. Ubuntu dağıtımını yükle
+wsl --install -d Ubuntu
+```
+
+**🎤 Eğitmen açıklar:**
+
+> "WSL2 nedir? Windows içinde gerçek bir Linux kernel'i çalıştırır. Docker container'ları Linux tabanlı olduğu için gerekli."
+
+**Adım 3: Ubuntu İlk Kurulum**
+
+```bash
+# İlk açılışta kullanıcı adı ve şifre sor
+# Örnek:
+# Username: workshop
+# Password: ****
+```
+
+**💡 Troubleshooting:**
+
+| Sorun | Çözüm |
+|-------|-------|
+| "Virtualization disabled" | BIOS'ta VT-x/AMD-V etkinleştir |
+| "WSL 2 requires an update" | https://aka.ms/wsl2kernel - kernel güncelle |
+| wsl --install çalışmıyor | Windows Update kontrol et, güncel olmalı |
+
+---
+
+#### Docker Desktop Kurulumu
+
+**🎤 Eğitmen der:**
+
+> "WSL2 hazır, şimdi Docker Desktop'ı indirip kuracağız."
+
+**Adım 1: Docker Desktop İndirme**
+
+```
+İnternet tarayıcıda:
+https://www.docker.com/products/docker-desktop/
+
+→ "Download for Windows" butonuna tıkla
+→ DockerDesktopInstaller.exe indir (yaklaşık 500-600 MB)
+```
+
+**📊 Ekran Göster:**
+
+```
+┌────────────────────────────────────────────────────┐
+│   Docker Desktop Download Sayfası                  │
+├────────────────────────────────────────────────────┤
+│                                                    │
+│   [🐳 Docker Desktop]                              │
+│                                                    │
+│   Windows | Mac | Linux                           │
+│                                                    │
+│   ╔════════════════════════════════╗              │
+│   ║  Download for Windows          ║              │
+│   ║  (Docker Desktop Installer.exe)║              │
+│   ╚════════════════════════════════╝              │
+│                                                    │
+│   System Requirements:                            │
+│   • Windows 10 64-bit (21H2 or higher)            │
+│   • WSL 2 feature enabled                         │
+│   • 4GB RAM minimum                               │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Adım 2: Docker Desktop Kurulum**
+
+```
+1. DockerDesktopInstaller.exe dosyasına çift tıkla
+2. "Use WSL 2 instead of Hyper-V" seçeneği işaretli olmalı ✓
+3. "Add shortcut to desktop" seçeneği işaretli (opsiyonel)
+4. "Install" butonuna tıkla
+5. Kurulum tamamlanınca "Close and restart" tıkla
+6. Bilgisayar yeniden başlar
+```
+
+**📊 Kurulum Ekranı:**
+
+```
+┌────────────────────────────────────────────────────┐
+│   Docker Desktop Installer                         │
+├────────────────────────────────────────────────────┤
+│                                                    │
+│   Configuration                                    │
+│                                                    │
+│   ☑ Use WSL 2 instead of Hyper-V (recommended)    │
+│   ☑ Add shortcut to desktop                       │
+│                                                    │
+│   Installation will require about 2.5 GB          │
+│                                                    │
+│   ┌──────────────────────────────┐                │
+│   │         Install              │                │
+│   └──────────────────────────────┘                │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Adım 3: İlk Çalıştırma ve Ayarlar**
+
+```
+1. Yeniden başlatma sonrası Docker Desktop otomatik açılır
+2. "Accept" Service Agreement'i kabul et
+3. "Skip" anket/login ekranını atla (opsiyonel)
+4. Docker Desktop açılır, gösterge yeşil olmalı: 🟢 Docker is running
+```
+
+**Adım 4: Kurulum Testi**
+
+```powershell
+# PowerShell veya CMD aç
+
+# Docker versiyonu kontrol et
+docker --version
+# Beklenen: Docker version 24.0.x, build xxxxxxx
+
+# Docker Compose kontrol et
+docker compose version
+# Beklenen: Docker Compose version v2.x.x
+
+# Test container'ı çalıştır
+docker run hello-world
+
+# Beklenen çıktı:
+# Hello from Docker!
+# This message shows that your installation appears to be working correctly.
+```
+
+**🎤 Eğitmen der:**
+
+> "Eğer 'Hello from Docker!' mesajını gördüyseniz, kurulum başarılı! Docker çalışıyor."
+
+**⚠️ Yaygın Kurulum Sorunları:**
+
+| Sorun | Çözüm |
+|-------|-------|
+| "Docker failed to start" | WSL2 kontrol: `wsl --status` |
+| "Hardware assisted virtualization" | BIOS'ta VT-x/AMD-V aç |
+| "Access denied" | Kullanıcıyı "docker-users" grubuna ekle |
+| Docker çok yavaş | Settings → Resources → Memory 4GB+ ver |
+
+**Docker Desktop Settings (Önerilen Ayarlar):**
+
+```
+Docker Desktop → Settings (⚙️)
+
+General:
+☑ Start Docker Desktop when you log in
+☑ Use the WSL 2 based engine
+
+Resources → Advanced:
+• CPUs: 2-4 (bilgisayar kapasitesine göre)
+• Memory: 4-8 GB
+• Disk image size: 64 GB (default)
+
+Docker Engine:
+(Varsayılan ayarlar yeterli, değiştirme)
+```
+
+**✅ Kurulum Tamamlandı Checklist:**
+
+- [ ] WSL2 kurulu ve çalışıyor (`wsl --status`)
+- [ ] Docker Desktop kurulu ve çalışıyor (🟢 green icon)
+- [ ] `docker --version` çalışıyor
+- [ ] `docker run hello-world` başarılı
+
+**🎤 Eğitmen der:**
+
+> "Docker kurulumu tamamlandı! Artık workshop'ın asıl kısmına geçebiliriz. Herkes hazır mı?"
+
+---
+
 ### Ders Öncesi Teknik Kontroller (10 dakika önce)
+
+> **Not:** Aşağıdaki komutlar docker kurulumu tamamlandıktan sonra, ders başlamadan önce eğitmen tarafından yapılır.
 
 ```bash
 # 1. Docker Desktop çalışıyor mu?
