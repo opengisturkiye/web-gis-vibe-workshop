@@ -24,7 +24,7 @@ services:
 
   # GeoServer
   geoserver:
-    image: kartoza/geoserver:latest-ubuntu
+    image: kartoza/geoserver:latest
     container_name: geoserver
     environment:
       GEOSERVER_ADMIN_USER: admin
