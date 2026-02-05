@@ -1053,6 +1053,456 @@ http://localhost:8080/geoserver/workshop/wms?service=WMS&version=1.1.0&request=G
 
 ---
 
+### Adım 6: SLD ile Kategorik Stil Düzenleme (8 dakika) - BONUS
+
+**🎤 Eğitmen der:**
+
+> "Tüm noktalar kırmızı görünüyor. Peki, nokta türlerine (type) göre farklı renkler vermek istersek? SLD (Styled Layer Descriptor) kullanırız!"
+
+**⚠️ Opsiyonel Adım:**
+
+> "Bu bölüm ders 3 sonrasında kalan zamanınız varsa yapabilirsiniz. Ders 5'te (Çizim Araçları) da stil düzenleme vardır."
+
+---
+
+**👨‍🏫 Canlı Demo: SLD Editörü**
+
+**Sol menüden:**
+```
+Data → Styles
+```
+
+**Tıkla!**
+
+**📊 Styles Sayfası:**
+
+```
+┌────────────────────────────────────────────────────┐
+│  Styles                              [Add new style]
+├────────────────────────────────────────────────────┤
+│  Name            │ Workspace  │ Format  │ Date      │
+│                  │            │         │           │
+│  (Önceden tanımlı stiller)                         │
+│  point           │ (default)  │ SLD     │ ...       │
+│  line            │ (default)  │ SLD     │ ...       │
+│  polygon         │ (default)  │ SLD     │ ...       │
+│  raster          │ (default)  │ SLD     │ ...       │
+│                  │            │         │           │
+└────────────────────────────────────────────────────┘
+```
+
+**[Add new style] butonuna tıkla!**
+
+**📊 New Style Sayfası:**
+
+```
+┌────────────────────────────────────────────────────┐
+│  Add new style                                     │
+├────────────────────────────────────────────────────┤
+│                                                    │
+│  Name: *                                          │
+│  [workshop_points_style              ]             │
+│                                                    │
+│  Workspace:                                       │
+│  [(default)              ▼]                        │
+│                                                    │
+│  Format:                                          │
+│  [SLD             ▼]  (SLD seçili)                │
+│                                                    │
+│  [Create Style]  [Cancel]                         │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Eğitmen formu doldurur:**
+
+**Alan 1: Name**
+
+**Yazar:**
+```
+Name: workshop_points_kategorik
+```
+
+**Alan 2: Workspace**
+
+**Seç:**
+```
+Workspace: (default)
+```
+
+**Alan 3: Format**
+
+**Zaten seçili:**
+```
+Format: SLD
+```
+
+**[Create Style] butonuna tıkla!**
+
+**📊 SLD Editor Sayfası (KOD EDITÖRÜ):**
+
+```
+┌────────────────────────────────────────────────────┐
+│  Edit Style: workshop_points_kategorik             │
+│                                                    │
+│  [← Back] [Preview] [Validate] [Save]             │
+│                                                    │
+│  ────────────────────────────────────────────────  │
+│                                                    │
+│  <?xml version="1.0" encoding="UTF-8"?>           │
+│  <StyledLayerDescriptor version="1.0.0"           │
+│    xsi:schemaLocation="http://www.opengis.net... │
+│    xmlns="http://www.opengis.net/sld"            │
+│    xmlns:ogc="http://www.opengis.net/ogc"        │
+│    xmlns:xlink="http://www.w3.org/1999/xlink"    │
+│    xmlns:xsi="http://www.w3.org/2001/XMLSchema..." │
+│  >                                                 │
+│                                                    │
+│    <NamedLayer>                                    │
+│      <Name>workshop:points</Name>                 │
+│      <UserStyle>                                  │
+│        <FeatureTypeStyle>                         │
+│          <Rule>                                   │
+│            <ogc:Filter>                           │
+│              <ogc:PropertyIsEqualTo>              │
+│                <ogc:Function name="strSubstring">│
+│                  <ogc:PropertyName>type</ogc... │
+│                </ogc:Function>                    │
+│                <ogc:Literal>T</ogc:Literal>       │
+│              </ogc:PropertyIsEqualTo>             │
+│            </ogc:Filter>                          │
+│            <PointSymbolizer>                      │
+│              <Graphic>                            │
+│                <Mark>                             │
+│                  <WellKnownName>circle</...       │
+│                  <Fill>                           │
+│                    <CssParameter name="fill">     │
+│                      #FF0000                      │
+│                    </CssParameter>                │
+│                  </Fill>                          │
+│                </Mark>                            │
+│                <Size>8</Size>                     │
+│              </Graphic>                           │
+│            </PointSymbolizer>                     │
+│          </Rule>                                  │
+│        </FeatureTypeStyle>                        │
+│      </UserStyle>                                 │
+│    </NamedLayer>                                  │
+│                                                    │
+│  </StyledLayerDescriptor>                          │
+│                                                    │
+│  ────────────────────────────────────────────────  │
+│                                                    │
+│  [Save]  [Cancel]                                 │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**🎤 Eğitmen açıklar:**
+
+> "SLD XML dilinde yazılır. Karışık görünüyor, ama yapısı basit:
+> 
+> 1. **NamedLayer** → Stil hangi layer için?
+> 2. **Rule** → Kurallar (eğer type='Tarihi' ise kırmızı)
+> 3. **PointSymbolizer** → Nokta nasıl çizilecek?
+> 4. **Graphic** → Grafik elemanı
+> 5. **Mark** → Şekil (circle, square, triangle...)
+> 6. **Fill** → Renk doldurma"
+
+**Tüm kodu sil ve kategorik stil ekle:**
+
+**Eğitmen tüm metni seçer (Ctrl+A) ve siler**
+
+**Yeni kod yazar:**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0"
+  xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
+  xmlns="http://www.opengis.net/sld"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NamedLayer>
+    <Name>workshop:points</Name>
+    <UserStyle>
+      <Title>Noktalar - Türe Göre Renkli</Title>
+      <FeatureTypeStyle>
+
+        <!-- KURAL 1: Tarihi Yerler - KIRMIZI -->
+        <Rule>
+          <Name>Tarihi</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Tarihi</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#FF0000</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#CC0000</CssParameter>
+                  <CssParameter name="stroke-width">2</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- KURAL 2: Spor Alanları - MAVİ -->
+        <Rule>
+          <Name>Spor</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Spor</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>square</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#0000FF</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#0000CC</CssParameter>
+                  <CssParameter name="stroke-width">2</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- KURAL 3: Eğitim - YEŞİL -->
+        <Rule>
+          <Name>Eğitim</Name>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>type</ogc:PropertyName>
+              <ogc:Literal>Eğitim</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>triangle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#00AA00</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#008800</CssParameter>
+                  <CssParameter name="stroke-width">2</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>10</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+        <!-- KURAL 4: Varsayılan - GRİ (Other türler için) -->
+        <Rule>
+          <Name>Diğer</Name>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#888888</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#555555</CssParameter>
+                  <CssParameter name="stroke-width">2</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>8</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+
+</StyledLayerDescriptor>
+```
+
+**🎤 Eğitmen açıklar:**
+
+> "SLD yapısı:
+> 
+> **Rule 1:** `type = 'Tarihi'` → Kırmızı daire (circle), boyut 10
+> **Rule 2:** `type = 'Spor'` → Mavi kare (square), boyut 10
+> **Rule 3:** `type = 'Eğitim'` → Yeşil üçgen (triangle), boyut 10
+> **Rule 4:** Diğer türler → Gri daire, boyut 8 (varsayılan)
+>
+> Her şekil:
+> - Fill → İçi rengi
+> - Stroke → Kenar rengi ve kalınlığı
+> - Size → Boyut (pixel)"
+
+**[Validate] butonuna tıkla (Hata kontrolü):**
+
+**📊 Beklenen:**
+
+```
+✅ SLD validated successfully.
+```
+
+**[Save] butonuna tıkla!**
+
+**📊 Başarı Mesajı:**
+
+```
+┌────────────────────────────────────────────────────┐
+│  ✅ Style 'workshop_points_kategorik' successfully  │
+│     saved                                          │
+└────────────────────────────────────────────────────┘
+```
+
+---
+
+**Adım 2: Stili Layer'a Uygula**
+
+**Sol menüden:**
+```
+Data → Layers
+```
+
+**Tıkla!**
+
+**`workshop:points` satırında [Layer'ı Edit] veya linkine tıkla**
+
+**Edit Layer sayfasında:**
+
+**[Publishing] sekmesine tıkla!**
+
+**📊 Publishing Sekmesi:**
+
+```
+┌────────────────────────────────────────────────────┐
+│  [Data] [Publishing] [Dimensions] [Tile Caching]  │
+│                                                    │
+│  ───────────────────────────────────              │
+│  WMS Settings                                     │
+│  ───────────────────────────────────              │
+│                                                    │
+│  Styles:                                          │
+│  Available Styles:                                │
+│  [point (default)]  [line]  [polygon]  [raster]  │
+│  [workshop_points_kategorik]  ← YENİ STİL!       │
+│                                                    │
+│  Default Style:                                   │
+│  [workshop_points_kategorik  ▼]  ← Seç!          │
+│                                                    │
+│  ───────────────────────────────────              │
+│  WMS Server Settings                              │
+│  ───────────────────────────────────              │
+│  ...                                              │
+│                                                    │
+│  [Save]  [Cancel]                                 │
+│                                                    │
+└────────────────────────────────────────────────────┘
+```
+
+**Eğitmen açıklar:**
+
+> "Available Styles'ta yeni `workshop_points_kategorik` stili görünüyor! Default Style olarak seç!"
+
+**Dropdown'dan seç:**
+
+```
+Default Style: workshop_points_kategorik
+```
+
+**[Save] butonuna tıkla!**
+
+**📊 Başarı:**
+
+```
+✅ Layer successfully saved
+```
+
+---
+
+**Adım 3: Sonucu Test Et**
+
+**Sol menüden:**
+```
+Data → Layer Preview
+```
+
+**`workshop:points` → [OpenLayers] tıkla!**
+
+**📊 Harita Güncellendi!**
+
+```
+┌─────────────────────────────────────────────────────┐
+│  GeoServer Layer Preview                            │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│       İSTANBUL HARİTASI (TÜREGÖREİ RENKLİ!)       │
+│                                                     │
+│   ◼ ← Mavi kare (Spor)                             │
+│  △ ← Yeşil üçgen (Eğitim)                          │
+│   ● ← Kırmızı daire (Tarihi)                       │
+│   ● ← Gri daire (Diğer)                            │
+│                                                     │
+│  [+] [-]  Zoom kontrolleri                         │
+│                                                    │
+└─────────────────────────────────────────────────────┘
+```
+
+**🎤 Eğitmen sevinçle:**
+
+> "SÜPER! Noktalar artık renkli ve türlerine göre organize! Kırmızı Tarihi yerler, Mavi Spor alanları, Yeşil Eğitim kurumları!
+>
+> Bu kategorik stilin avantajları:
+> - **Veri anlama kolaylaşır** → Renkler anlamı temsil eder
+> - **Harita okunabilirliği artar** → Farklı türleri hızlı görebilirsiniz
+> - **Production ortamına uygun** → Gerçek uygulamalarda böyle kullanılır"
+
+**⚠️ Bonus: Başka Şekiller**
+
+**Eğitmen açıklar:**
+
+> "SLD'de diğer şekiller de kullanabilirsiniz:
+> - `circle` → Daire
+> - `square` → Kare
+> - `triangle` → Üçgen
+> - `star` → Yıldız
+> - `cross` → Artı işareti
+> - `x` → X işareti
+>
+> Ayrıca harici PNG/SVG ikonları da ekleyebilirsiniz. Advanced kullanım için GeoServer dokümantasyonu!"
+
+**⚠️ Bonus: Dinamik Boyut (Feature Attribute'a Göre)**
+
+**Eğitmen gösterir:**
+
+> "Size'i sabit değil, dinamik yapabilirsiniz. Örneğin, ziyaretçi sayısına göre boyut değişebilir:
+>
+> ```xml
+> <Size>
+>   <ogc:Mul>
+>     <ogc:Literal>0.002</ogc:Literal>
+>     <ogc:PropertyName>visitor_count</ogc:PropertyName>
+>   </ogc:Mul>
+> </Size>
+> ```
+>
+> Fazla ziyaretçi → Daha büyük nokta!"
+
+---
+
 ### Kapanış ve Özet (2 dakika)
 
 **🎤 Eğitmen der:**
@@ -1072,6 +1522,7 @@ http://localhost:8080/geoserver/workshop/wms?service=WMS&version=1.1.0&request=G
 ✓ Bounding Box hesaplandı
 ✓ Layer Preview ile test edildi
 ✓ WMS servisi çalışıyor
+✓ **(BONUS)** SLD kategorik stili oluşturuldu
 
 📚 ÖĞRENİLEN KAVRAMLAR
 ─────────────────────────────────────────
@@ -1082,6 +1533,10 @@ http://localhost:8080/geoserver/workshop/wms?service=WMS&version=1.1.0&request=G
 • Bounding Box kavramı
 • GetFeatureInfo isteği
 • Layer yayınlama süreci
+• SLD (Styled Layer Descriptor) - Stil tanımı
+• Kategorik stil (ogc:Filter ile kurallar)
+• PointSymbolizer, Mark, Fill, Stroke
+• Şekil seçimi (circle, square, triangle...)
 
 ⚠️ KRİTİK NOKTALAR
 ─────────────────────────────────────────
@@ -1089,6 +1544,8 @@ http://localhost:8080/geoserver/workshop/wms?service=WMS&version=1.1.0&request=G
 ❗ Bounding Box hesapla (Compute from data)
 ❗ EPSG:4326 koordinat sistemi
 ❗ Force declared SRS handling
+❗ SLD'de XML söz dizimi doğru olmalı (Validate!)
+❗ ogc:Filter ile koşullu stiller oluşturabilirsiniz
 ```
 
 **🎤 Eğitmen vurgular:**
@@ -1106,6 +1563,7 @@ http://localhost:8080/geoserver/workshop/wms?service=WMS&version=1.1.0&request=G
 - [ ] Tüm katılımcılar layer yayınladı
 - [ ] Layer Preview'de 17 nokta görünüyor
 - [ ] Popup çalışıyor
+- [ ] **(BONUS)** SLD stili oluşturuldu ve kategorik renkler gösterildi
 
 ### Yaygın Sorunlar
 
