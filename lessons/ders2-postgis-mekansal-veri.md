@@ -426,12 +426,12 @@ WHERE a.id = 1 AND b.id = 2;
 ```
 nokta1          | nokta2           | mesafe_km
 ─────────────────┼──────────────────┼──────────
-Kız Kulesi      | Galata Kulesi    | 2.93
+Kız Kulesi      | Galata Kulesi    | 2.56
 ```
 
 **🎤 Eğitmen vurgular:**
 
-> "**2.93 kilometre!** PostGIS, dünya yüzeyinde gerçek mesafeyi hesapladı!
+> "**2.56 kilometre!** PostGIS, dünya yüzeyinde gerçek mesafeyi hesapladı!
 >
 > Tek bir SQL sorgusuyla! DBeaver'da komutun yanı sıra sonuç hemen görünüyor."
 
@@ -442,7 +442,7 @@ Kız Kulesi      | Galata Kulesi    | 2.93
 ```
 Kız Kulesi (nokta 1)
     |
-    |  2.93 km
+    |  2.56 km
     |
 Galata Kulesi (nokta 2)
 ```
@@ -451,7 +451,7 @@ Galata Kulesi (nokta 2)
 
 **Eğitmen sorar:**
 
-> "Herkes 2.93 km sonucunu gördü mü? DBeaver'da sorgu çalıştırabildi mi?"
+> "Herkes 2.56 km sonucunu gördü mü? DBeaver'da sorgu çalıştırabildi mi?"
 
 ---
 
@@ -472,7 +472,7 @@ FROM points a, points b
 WHERE a.id = 10 AND b.id = 12;
 ```
 
-**Sonuç: 2.69 km**
+**Sonuç: 2.88 km**
 
 **Örnek 2: Belirli tipe ait noktaları listele:**
 

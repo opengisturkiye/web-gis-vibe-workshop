@@ -43,7 +43,7 @@ curl http://localhost:8081
 # Veya tarayıcıda: http://localhost:8081
 
 # 3. GeoServer WMS servisi çalışıyor mu?
-curl "http://localhost:8088/geoserver/wms?service=WMS&version=1.1.0&request=GetCapabilities"
+curl "http://localhost:8088/geoserver/ows?service=WMS&version=1.3.0&request=GetCapabilities"
 
 # 4. Tarayıcı Developer Tools hazır mı?
 # F12 tuşu ile açılmalı
@@ -440,7 +440,7 @@ const osmLayer = new ol.layer.Tile({
 
 const wmsLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: `${CONFIG.geoserverUrl}/wms`,
+        url: `${CONFIG.geoserverUrl}/ows`,
         params: {
             'LAYERS': `${CONFIG.workspace}:${CONFIG.layerName}`,
             'TILED': true
@@ -464,7 +464,7 @@ const wmsLayer = new ol.layer.Tile({
 **Line 3: `url`**
 
 > "GeoServer WMS endpoint'i:
-> `http://localhost:8088/geoserver/wms`
+> `http://localhost:8088/geoserver/ows`
 > 
 > Template literal kullanıyoruz (backtick)."
 
